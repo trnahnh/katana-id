@@ -2,13 +2,19 @@ package main
 
 import (
 	"fmt"
-	"katanaid/handlers"
 	"net/http"
+
+	"katanaid/database"
+	"katanaid/handlers"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func main() {
+	// Connect to database
+	database.Connect()
+	defer database.Close()
+
 	// Initialize router
 	r := chi.NewRouter()
 
