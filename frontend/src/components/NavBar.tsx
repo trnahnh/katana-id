@@ -12,11 +12,11 @@ const NavBar = () => {
         <p className="font-mono font-bold hover:drop-shadow-[0_0_5px_rgba(59,130,246,0.8)] transition-shadow">Katana ID</p>
       </div>
       <div className="flex items-center gap-3">
-        <HoverCard>
+        <HoverCard openDelay={200} closeDelay={1000}>
           <HoverCardTrigger asChild>
             <Button variant="ghost">Developers</Button>
           </HoverCardTrigger>
-          <HoverCardContent className="flex gap-2">
+          <HoverCardContent className="flex gap-2 mt-2">
             <Card className="p-0">
               <CardContent className="p-2">
                 <Button variant="ghost">Khiem Nguyen</Button>
