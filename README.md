@@ -13,7 +13,7 @@ Anh Tran & Khiem Nguyen
 - [ ] Deploy backend
 ### Frontend - React
 - [ ] Add landing page - Khiem
-- [ ] Add navbar - Khiem
+- [X] Add navbar - Khiem
 - [ ] Add login, signup button - Khiem
 - [ ] Add 404 page - Khiem
 - [ ] Add contact us section - Khiem
