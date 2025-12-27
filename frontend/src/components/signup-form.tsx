@@ -131,7 +131,7 @@ export function SignupForm({
           </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
-        <Field>
+        <Field className="gap-5">
           <Button variant="outline">
             <svg className="size-4" viewBox="0 0 24 24">
               <path
