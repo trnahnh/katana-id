@@ -17,7 +17,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const {signup, isSigningUp} = useAuthStore();
+  const {signup } = useAuthStore();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
