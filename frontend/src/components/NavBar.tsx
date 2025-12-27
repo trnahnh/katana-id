@@ -10,7 +10,7 @@ const NavBar = () => {
   return (
     <nav className="sticky top-0 w-fullborder-b-2 border-2">
       <div className="mx-auto max-w-6xl flex items-center p-3">
-        <div className="flex flex-1 items-center gap-3">
+        <div className="flex flex-1 items-center gap-3" onClick={() => navigate('/')}>
           <img src={logo} className="h-8 hover:drop-shadow-[0_0_5px_rgba(60,130,240,1)] transition-all" />
           <p className="text-xl hover:drop-shadow-[0_0_10px_rgba(60,130,240,1)] transition-all">Katana ID</p>
         </div>
