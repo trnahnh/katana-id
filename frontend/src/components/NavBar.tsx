@@ -2,8 +2,11 @@ import { Button } from "./ui/button"
 import { ArrowRight, LucideCodeXml } from 'lucide-react'
 import logo from '/logo.svg'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@radix-ui/react-hover-card"
+import { useNavigate } from "react-router-dom"
 
 const NavBar = () => {
+  const navigate = useNavigate()
+
   return (
     <nav className="sticky top-0 w-fullborder-b-2 border-2">
       <div className="mx-auto max-w-6xl flex items-center p-3">
@@ -28,7 +31,7 @@ const NavBar = () => {
           <Button variant="ghost">Contact</Button>
         </div>
         <div className="flex flex-1 items-center justify-end gap-3">
-          <Button variant="ghost">Sign in</Button>
+          <Button variant="ghost" onClick={() => navigate('/signup')}>Sign in</Button>
           <Button variant="default">Verify content <ArrowRight /></Button>
         </div>
       </div>
