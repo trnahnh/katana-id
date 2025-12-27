@@ -22,8 +22,10 @@ type LoginRequest struct {
 
 // LoginResponse is the success response
 type LoginResponse struct {
-	Token   string `json:"token"`
-	Message string `json:"message"`
+	Token    string `json:"token"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Message  string `json:"message"`
 }
 
 // User represents a user from the database
@@ -90,7 +92,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Success response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(LoginResponse{
-		Token:   tokenString,
-		Message: "Login successful",
+		Token:    tokenString,
+		Username: user.Username,
+		Email:    user.Email,
+		Message:  "Login successful",
 	})
 }

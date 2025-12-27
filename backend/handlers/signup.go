@@ -4,18 +4,29 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"katanaid/database"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Signup Request is the expected JSON body
+// SignupRequest is the expected JSON body
 type SignupRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+// SignupResponse is the success response
+type SignupResponse struct {
+	Token    string `json:"token"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Message  string `json:"message"`
 }
 
 // Signup handles POST /signup requests
@@ -52,14 +63,15 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Insert user into database
-	_, err = database.DB.Exec(
+	// Insert user into database and get the new user ID
+	var userID int
+	err = database.DB.QueryRow(
 		context.Background(),
-		"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)",
+		"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
 		strings.ToLower(req.Username),
 		strings.ToLower(req.Email),
 		string(hashedPassword),
-	)
+	).Scan(&userID)
 
 	if err != nil {
 		// Check for duplicate errors
@@ -75,10 +87,29 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate JWT token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":  userID,
+		"username": strings.ToLower(req.Username),
+		"email":    strings.ToLower(req.Email),
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	// Sign the token with secret
+	jwtSecret := os.Getenv("JWT_SECRET")
+	tokenString, err := token.SignedString([]byte(jwtSecret))
+	if err != nil {
+		http.Error(w, `{"error": "Failed to generate token"}`, http.StatusInternalServerError)
+		return
+	}
+
 	// Return success response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{
-		"message": "User created successfully",
+	json.NewEncoder(w).Encode(SignupResponse{
+		Token:    tokenString,
+		Username: strings.ToLower(req.Username),
+		Email:    strings.ToLower(req.Email),
+		Message:  "User created successfully",
 	})
 }
