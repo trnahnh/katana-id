@@ -11,27 +11,27 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import logo from "/logo.svg";
 import { useState } from "react";
-import { useAuthStore} from '../store/useAuthStore'
+import { useAuthStore } from "../store/useAuthStore";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const {signup } = useAuthStore();
+  const { signup } = useAuthStore();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     signup({
       username: username,
       email: email,
       password: password,
-    })
-  }
+    });
+  };
 
   const navigate = useNavigate();
   return (
@@ -74,7 +74,8 @@ export function SignupForm({
             type="password"
             placeholder="••••••••"
             required
-            value={password} onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
         <Field>
@@ -84,7 +85,8 @@ export function SignupForm({
             type="password"
             placeholder="••••••••"
             required
-            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Field>
         <Field>
