@@ -46,26 +46,34 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	username := strings.TrimSpace(req.Username)
+	email := strings.TrimSpace(req.Email)
+	password := strings.TrimSpace(req.Password)
+
 	// Validate input
-	if req.Username == "" || req.Email == "" || req.Password == "" {
-		http.Error(w, `{"error": "Username, email, and password are required"}`, http.StatusBadRequest)
+	if username == "" || email == "" || password == "" {
+		log.Print("Request had empty field")
+		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username, email and password required"})
 		return
 	}
 
 	if len(req.Username) < 3 {
-		http.Error(w, `{"error": "Username must be at least 3 characters"}`, http.StatusBadRequest)
+		log.Print("Username length less than 3")
+		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username must be at least 3 characters"})
 		return
 	}
 
 	if len(req.Password) < 8 {
-		http.Error(w, `{"error": "Password must be at least 8 characters"}`, http.StatusBadRequest)
+		log.Print("Password length less than 8")
+		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Password must be at least 8 characters"})
 		return
 	}
 
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		http.Error(w, `{"error": "Failed to hash password"}`, http.StatusInternalServerError)
+		log.Print("Error generating password hash")
+		writeJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
