@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"katanaid/database"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -88,22 +90,26 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	err = database.DB.QueryRow(
 		context.Background(),
 		"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
-		string(username),
-		string(email),
+		username,
+		email,
 		string(hashedPassword),
 	).Scan(&userID)
 
 	if err != nil {
-		// Check for duplicate errors
-		if strings.Contains(err.Error(), "duplicate") {
-			if strings.Contains(err.Error(), "username") {
-				http.Error(w, `{"error": "Username already exists"}`, http.StatusConflict)
-				return
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			switch pgErr.ConstraintName {
+			case "users_username_key":
+				writeJSON(w, http.StatusConflict, ErrorResponse{Error: "Username already taken"})
+			case "users_email_key":
+				writeJSON(w, http.StatusConflict, ErrorResponse{Error: "Email already registered"})
+			default:
+				writeJSON(w, http.StatusConflict, ErrorResponse{Error: "Account already registered"})
 			}
-			http.Error(w, `{"error": "Email already exists"}`, http.StatusConflict)
 			return
 		}
-		http.Error(w, `{"error": "Failed to create user"}`, http.StatusInternalServerError)
+		log.Print("Error creating account:", err)
+		writeJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
