@@ -47,30 +47,30 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := strings.TrimSpace(req.Username)
-	email := strings.TrimSpace(req.Email)
+	email := strings.ToLower(strings.TrimSpace(req.Email))
 	password := strings.TrimSpace(req.Password)
 
 	// Validate input
 	if username == "" || email == "" || password == "" {
-		log.Print("Request had empty field")
+		log.Print("Request has empty field")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username, email and password required"})
 		return
 	}
 
-	if len(req.Username) < 3 {
+	if len(username) < 3 {
 		log.Print("Username length less than 3")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username must be at least 3 characters"})
 		return
 	}
 
-	if len(req.Password) < 8 {
+	if len(password) < 8 {
 		log.Print("Password length less than 8")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Password must be at least 8 characters"})
 		return
 	}
 
 	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Print("Error generating password hash")
 		writeJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Something went wrong"})
@@ -82,8 +82,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	err = database.DB.QueryRow(
 		context.Background(),
 		"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
-		strings.ToLower(req.Username),
-		strings.ToLower(req.Email),
+		string(username),
+		strings.ToLower(email),
 		string(hashedPassword),
 	).Scan(&userID)
 
