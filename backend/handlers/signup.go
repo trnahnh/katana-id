@@ -47,8 +47,8 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := strings.TrimSpace(req.Username)
-	email := strings.ToLower(strings.TrimSpace(req.Email))
+	username := strings.ToLower(strings.TrimSpace(req.Username)) // Normalize. No duplicate
+	email := strings.ToLower(strings.TrimSpace(req.Email)) // Normalize. No duplicate
 	password := strings.TrimSpace(req.Password)
 
 	// Validate input
@@ -89,7 +89,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		context.Background(),
 		"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
 		string(username),
-		strings.ToLower(email),
+		string(email),
 		string(hashedPassword),
 	).Scan(&userID)
 
