@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -61,6 +62,11 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		log.Print("Username length less than 3")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username must be at least 3 characters"})
 		return
+	}
+
+	if !isValidEmail(email) {
+		log.Print("Invalid email format")
+		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid email"})
 	}
 
 	if len(password) < 8 {
@@ -129,4 +135,9 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		Email:    strings.ToLower(req.Email),
 		Message:  "User created successfully",
 	})
+}
+
+func isValidEmail(email string) bool {
+	var emailRegex = regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`)
+	return emailRegex.MatchString(email)
 }
