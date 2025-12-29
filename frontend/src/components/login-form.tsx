@@ -10,12 +10,24 @@ import {
 import { Input } from "@/components/ui/input"
 import logo from '/logo.svg'
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useAuthStore } from "../store/useAuthStore"
+import { LucideLoader2 } from "lucide-react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const { login, isLoggingIn } = useAuthStore()
   const navigate = useNavigate()
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    login({ email, password })
+  }
 
   return (
     <form className={cn("flex flex-col gap-6 max-w-sm w-full", className)} {...props}>
