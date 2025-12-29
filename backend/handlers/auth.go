@@ -110,7 +110,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		Token:    tokenString,
 		Username: username,
 		Email:    email,
-		Message:  "Successfully created user",
+		Message:  "Successfully signed up",
 	})
 }
 
