@@ -46,14 +46,18 @@ export function SignupForm({
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isValidInfo()) {
-      signup({
+      await signup({
         username: username,
         email: email,
         password: password,
       });
+
+      if (useAuthStore.getState().token) {
+        navigate('/dashboard')
+      }
     }
   };
 
