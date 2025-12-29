@@ -1,18 +1,32 @@
-import { Button } from "./ui/button"
-import { ArrowRight, LucideCodeXml } from 'lucide-react'
-import logo from '/logo.svg'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@radix-ui/react-hover-card"
-import { useNavigate } from "react-router-dom"
+import { Button } from "./ui/button";
+import { ArrowRight, LucideCodeXml } from "lucide-react";
+import logo from "/logo.svg";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@radix-ui/react-hover-card";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const NavBar = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { token, logout } = useAuthStore();
 
   return (
     <nav className="sticky top-0 w-full border-b-2 bg-background">
       <div className="mx-auto max-w-6xl flex items-center p-3">
-        <div className="flex flex-1 items-center gap-3" onClick={() => navigate('/')}>
-          <img src={logo} className="h-8 hover:drop-shadow-[0_0_5px_rgba(60,130,240,1)] transition-all" />
-          <p className="text-xl hover:drop-shadow-[0_0_10px_rgba(60,130,240,1)] transition-all">KatanaID</p>
+        <div
+          className="flex flex-1 items-center gap-3"
+          onClick={() => navigate("/")}
+        >
+          <img
+            src={logo}
+            className="h-8 hover:drop-shadow-[0_0_5px_rgba(60,130,240,1)] transition-all"
+          />
+          <p className="text-xl hover:drop-shadow-[0_0_10px_rgba(60,130,240,1)] transition-all">
+            KatanaID
+          </p>
         </div>
         <div className="flex flex-1 items-center justify-center gap-3">
           <HoverCard openDelay={200} closeDelay={400}>
@@ -21,22 +35,41 @@ const NavBar = () => {
             </HoverCardTrigger>
             <HoverCardContent className="gap-2 mt-2 bg-popover p-2 rounded-md border animate-accordion-down">
               <div className="flex gap-2">
-                <a href="https://github.com/suka712"><Button variant="secondary">Khiem Nguyen</Button></a>
-                <a href="https://github.com/trnahnh"><Button variant="secondary">Anh Tran</Button></a>
+                <a href="https://github.com/suka712">
+                  <Button variant="secondary">Khiem Nguyen</Button>
+                </a>
+                <a href="https://github.com/trnahnh">
+                  <Button variant="secondary">Anh Tran</Button>
+                </a>
               </div>
-              <a href="https://github.com/trnahnh/katanaid"><Button variant="outline" className="mt-2 w-full"><LucideCodeXml />GitHub</Button></a>
+              <a href="https://github.com/trnahnh/katanaid">
+                <Button variant="outline" className="mt-2 w-full">
+                  <LucideCodeXml />
+                  GitHub
+                </Button>
+              </a>
             </HoverCardContent>
           </HoverCard>
           <Button variant="ghost">Demo</Button>
           <Button variant="ghost">Contact</Button>
         </div>
         <div className="flex flex-1 items-center justify-end gap-3">
-          <Button variant="ghost" onClick={() => navigate('/signup')}>Sign in</Button>
-          <Button variant="default">Verify content <ArrowRight /></Button>
+          {token === null ? (
+            <Button variant="ghost" onClick={() => navigate("/signup")}>
+              Sign in
+            </Button>
+          ) : (
+            <Button variant="ghost" onClick={() => logout}>
+              Log out
+            </Button>
+          )}
+          <Button variant="default">
+            Verify content <ArrowRight />
+          </Button>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default NavBar
+export default NavBar;

@@ -1,22 +1,19 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar";
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DataTable } from "@/components/data-table";
+import { SectionCards } from "@/components/section-cards";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import data from "../data/data.json"
-import { useAuthStore } from "@/store/useAuthStore"
-import { Navigate } from "react-router-dom"
+import data from "../data/data.json";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Navigate } from "react-router-dom";
 
 const DashboardPage = () => {
-  const {token} = useAuthStore()
+  const { token } = useAuthStore();
 
-  if (!token) {
-    return <Navigate to="/login" replace />
+  if (token === null) {
+    return <Navigate to="/login" replace />;
   }
 
   return (
@@ -44,7 +41,7 @@ const DashboardPage = () => {
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;
