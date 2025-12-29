@@ -9,8 +9,16 @@ import {
 } from "@/components/ui/sidebar"
 
 import data from "../data/data.json"
+import { useAuthStore } from "@/store/useAuthStore"
+import { Navigate } from "react-router-dom"
 
 const DashboardPage = () => {
+  const {token} = useAuthStore()
+
+  if (!token) {
+    return <Navigate to="/login" replace />
+  }
+
   return (
     <SidebarProvider
       style={
