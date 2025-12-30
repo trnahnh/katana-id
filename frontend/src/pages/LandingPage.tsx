@@ -27,21 +27,19 @@ const LandingPage = () => {
           </span>
         </h1>
         <div className="text-center mt-10">
-          <p className="text-md">
-            Upload any image, video or audio. Get instant verification.
-          </p>
-          <p className="mt-2">
+          <p className="text-md max-w-xl">
+            Upload any image, video or audio. Get instant verification. <br/>
             Let{" "}
             <span className="bg-linear-to-r from-blue-500 to-white bg-clip-text text-transparent">
               <b>AI-powered analysis</b>
-            </span>{" "}
-            catch what the eye can't.
+            </span>{" "} 
+            catch what the eye can't.<br/>
+            Completely for {" "}
+            <span className="bg-linear-to-r from-white to-amber-400 bg-clip-text text-transparent">
+              <b>free ✨!</b>
+            </span>
           </p>
           <p className="mt-2">
-            Completely{" "}
-            <span className="bg-linear-to-r from-white to-amber-400 bg-clip-text text-transparent">
-              <b>free</b>
-            </span>
           </p>
         </div>
         <div className="flex items-center justify-center gap-4 mt-10">
