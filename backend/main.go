@@ -58,8 +58,12 @@ func main() {
 	r := chi.NewRouter()
 
 	// CORS middleware
+	allowedOrigins := []string{"http://localhost:5173", "https://katanaid.com"}
+	if frontendURL := os.Getenv("FRONTEND_URL"); frontendURL != "" {
+		allowedOrigins = append(allowedOrigins, frontendURL)
+	}
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "https://katanaid.com"},
+		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
@@ -92,6 +96,10 @@ func main() {
 	r.Get("/auth/github/callback", handlers.GitHubCallback)
 
 	// Start server
-	fmt.Println("Server is running on port 8080")
-	http.ListenAndServe(":8080", r)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	fmt.Println("Server is running on port", port)
+	http.ListenAndServe(":"+port, r)
 }
