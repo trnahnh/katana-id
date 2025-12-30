@@ -7,7 +7,7 @@ const LandingPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="flex flex-col justify-center pt-25 items-center">
+      <div className="flex flex-col justify-center pt-20 items-center">
         <Button
           variant="outline"
           className="group overflow-hidden rounded-2xl"
@@ -16,7 +16,7 @@ const LandingPage = () => {
           Check for deepfake
           <LucideSearchCode className="hidden group-hover:block mr-2 transition-all" />
         </Button>
-        <h1 className="font-bold text-7xl text-center mt-10 max-w-5xl leading-normal">
+        <h1 className="font-bold text-7xl text-center mt-5 max-w-5xl leading-normal">
           Detect{" "}
           <span className="bg-linear-to-r from-purple-500 to-blue-100 bg-clip-text text-transparent">
             Deepfake
@@ -26,7 +26,7 @@ const LandingPage = () => {
             Precision
           </span>
         </h1>
-        <div className="text-center mt-10">
+        <div className="text-center mt-6">
           <p className="text-md max-w-xl">
             Upload any image, video or audio. Get instant verification. <br/>
             Let{" "}
