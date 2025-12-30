@@ -14,7 +14,7 @@ const LandingPage = () => {
         >
           Check for deepfake
           <LucideSearch className="group-hover:hidden transition-all" />
-          <LucideSearchCode className="hidden group-hover:block group-hover:ml-1 transition-all" />
+          <LucideSearchCode className="hidden group-hover:block transition-all" />
         </Button>
         <h1 className="font-bold text-7xl text-center mt-5 max-w-2xl leading-normal">
           Cut through{" "}
