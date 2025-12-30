@@ -14,8 +14,8 @@ const NavBar = () => {
   const { token, logout } = useAuthStore();
 
   return (
-    <nav className="sticky top-0 w-full border-b-2 bg-background h-15">
-      <div className="mx-auto max-w-6xl flex items-center p-3">
+    <nav className="sticky top-0 w-full h-full border-b-2 bg-background py-2">
+      <div className="mx-auto max-w-6xl flex items-center justify-center">
         <div
           className="flex flex-1 items-center gap-3"
           onClick={() => navigate("/")}
