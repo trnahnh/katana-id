@@ -161,7 +161,7 @@ const BentoCard = ({
     key={name}
     className={cn(
       "group relative col-span-3 flex flex-col justify-between border border-border/60 overflow-hidden rounded-xl",
-      "bg-black [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]",
+      "bg-slate-950 [box-shadow:0_-20px_80px_-20px_#000020_inset]",
       className
     )}
   >
