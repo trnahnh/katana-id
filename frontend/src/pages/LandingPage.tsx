@@ -13,14 +13,6 @@ import Footer from "@/components/Footer";
 const LandingPage = () => {
   return (
     <>
-      {/* Grid Background with cursor effect */}
-      <GridBackground
-        glowColor="#a855f7"
-        glowRadius={180}
-        glowIntensity={0.3}
-        gridSize={32}
-      />
-
       {/* ----------------------------------Hero Section---------------------------------- */}
       <div className="relative z-10 flex flex-col justify-center pt-10 md:pt-20 items-center">
         <MagicBadge title="AI verification suite" />
