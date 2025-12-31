@@ -24,7 +24,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <div className="relative z-10 flex flex-col justify-center pt-10 md:pt-20 items-center">
         <MagicBadge title="AI verification suite" />
-        <h1 className="font-bold text-7xl text-center mt-5 max-w-3xl leading-24">
+        <h1 className="text-7xl text-center mt-5 max-w-3xl leading-24">
           The{" "}
           <span className="bg-linear-to-r  from-blue-500 to-cyan-300  bg-clip-text text-transparent drop-shadow-[0_0_9px_rgba(60,130,240,0.8)]">
             Verification Blade
