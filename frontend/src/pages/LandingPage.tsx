@@ -63,7 +63,7 @@ const LandingPage = () => {
       </div>
 
       {/* Image Gallery - Bento Grid */}
-      <div className="relative z-10 pt-20 pb-20 px-4 w-full max-w-5xl mx-auto">
+      <div className="relative z-10 py-15 px-4 w-full max-w-5xl mx-auto">
         {/* Glow behind grid */}
         <div className="absolute inset-10 bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
         <div className="relative grid grid-cols-3 grid-rows-2 gap-4 h-125">
@@ -105,7 +105,7 @@ const LandingPage = () => {
       </div>
 
       {/* Features section */}
-      <MaxWidthWrapper className="my-20 relative pt-25 z-10">
+      <MaxWidthWrapper className="py-15 relative z-10">
         <AnimationContainer delay={0.1}>
           <div className="flex flex-col w-full items-center lg:items-center justify-center py-8">
             <MagicBadge title="Features" />
@@ -131,7 +131,7 @@ const LandingPage = () => {
       </MaxWidthWrapper>
 
       {/* CTA section */}
-      <MaxWidthWrapper className="my-20 max-w-[100vw] overflow-x-hidden scrollbar-hide">
+      <MaxWidthWrapper className="my-15 max-w-[100vw] overflow-x-hidden scrollbar-hide">
         <AnimationContainer delay={0.1}>
           <LampContainer>
             <div className="flex flex-col items-center justify-center relative w-full text-center max-w-3xl">
