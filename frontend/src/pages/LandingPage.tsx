@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import MagicBadge from "@/components/ui/magic-badge";
 import GridBackground from "@/components/GridBackground";
 import { LampContainer } from "@/components/ui/lamb";
+import Footer from "@/components/Footer";
 
 const LandingPage = () => {
   return (
@@ -151,6 +152,9 @@ const LandingPage = () => {
           </LampContainer>
         </AnimationContainer>
       </MaxWidthWrapper>
+
+      {/* ----------------------------------Footer---------------------------------- */}
+      <Footer/>
     </>
   );
 };

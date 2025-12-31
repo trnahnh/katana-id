@@ -6,13 +6,11 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/Dashboard'
 import AuthCallbackPage from './pages/AuthCallbackPage'
-import Footer from './components/Footer'
 
 const PublicLayout = () => (
   <>
     <NavBar />
     <Outlet />
-    <Footer/>
   </>
 )
 
