@@ -1,8 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, LucideSearch, LucideSearchCode } from "lucide-react";
 import { Link } from "react-router-dom";
 import dashboardImg from "@/assets/dashboard-example.png";
+import AnimationContainer  from "@/components/ui/animation-container";
+import MaxWidthWrapper from "@/components/ui/max-width-container"
+import { BentoCard, BentoGrid, CARDS } from "@/components/ui/bento-grid";
+import { Button } from "@/components/ui/button";
+import MagicBadge from "@/components/ui/magic-badge";
 import GridBackground from "@/components/GridBackground";
+
 
 const LandingPage = () => {
   return (
@@ -101,6 +106,29 @@ const LandingPage = () => {
         {/* Fade overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-linear-to-t from-background from-30% via-background/50 to-transparent pointer-events-none" />
       </div>
+
+      {/* Features section */}
+      <MaxWidthWrapper className="pt-10">
+        <AnimationContainer delay={0.1}>
+          <div className="flex flex-col w-full items-center lg:items-center justify-center py-8">
+            <MagicBadge title="Features" />
+            <h2 className="text-center lg:text-center text-3xl md:text-5xl leading-[1.1]! font-medium font-heading text-foreground mt-6">
+              Manage Links Like a Pro
+            </h2>
+            <p className="mt-4 text-center lg:text-center text-lg text-muted-foreground max-w-lg">
+              Linkify is a powerful link management tool that helps you shorten,
+              track, and organize all your links in one place.
+            </p>
+          </div>
+        </AnimationContainer>
+        <AnimationContainer delay={0.2}>
+          <BentoGrid className="py-8">
+            {CARDS.map((feature, idx) => (
+              <BentoCard key={idx} {...feature} />
+            ))}
+          </BentoGrid>
+        </AnimationContainer>
+      </MaxWidthWrapper>
     </>
   );
 };
