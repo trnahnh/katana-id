@@ -17,17 +17,17 @@ const LandingPage = () => {
         <MagicBadge title="AI verification suite" />
         <h1 className="text-5xl md:text-8xl leading-tight text-center mt-5 max-w-5xl">
           The{" "}
-          <span className="bg-linear-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_theme(colors.blue.500/80%)]">
+          <span className="bg-linear-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_--theme(--color-blue-500/80%)]">
             Verification Blade
           </span>{" "}
           Your Platform{" "}
-          <span className="bg-linear-to-r from-white to-slate-400 bg-clip-text text-transparent drop-shadow-[0_0_5px_theme(colors.slate.400)]">
+          <span className="bg-linear-to-r from-white to-slate-400 bg-clip-text text-transparent drop-shadow-[0_0_5px_var(--color-slate-400)]">
             Needs
           </span>
         </h1>
         <div className="text-center mt-6 text-accent-foreground">
           <p className="text-sm md:text-xl max-w-xl">
-            Deepfakes, bots, AI-generated spam - they're everywhere. <br />
+            Deepfakes, bots, AI-generated spam - they're everywhere. <br />z
             Katana gives you{" "}
             <span className="bg-linear-to-r from-blue-500 to-white bg-clip-text text-transparent">
               <b>one API</b>
