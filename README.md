@@ -10,7 +10,7 @@ Deepfake detection for images and videos.
 - **Backend:** Go
 - **Database:** PostgreSQL
 
-## Development & Contributing
+## Development & Contribution
 We are open to contribution to the project. Contact us via khiem@sukaseven.com or tran3ah@mail.uc.edu to get invited to the project.  
 ### Prerequisites
 
