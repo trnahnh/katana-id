@@ -10,6 +10,7 @@ import (
 
 	"katanaid/database"
 	"katanaid/handlers"
+	"katanaid/middleware"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
@@ -74,17 +75,11 @@ func main() {
 	r.Get("/health", handlers.Health)
 
 	// Auth endpoints
-	r.Post("/auth/signup", handlers.Signup)
-	r.Post("/auth/login", handlers.Login)
-
-	// Upload endpoint
-	r.Post("/api/upload", handlers.Upload)
-
-	// Analyze endpoint
-	r.Post("/api/analyze", handlers.Analyze)
-
-	// History endpoint
-	r.Get("/api/history", handlers.History)
+	r.Route("/auth", func(r chi.Router) {
+		r.Use(middleware.AuthRateLimiter())
+		r.Post("/signup", handlers.Signup)
+		r.Post("/login", handlers.Login)
+	})
 
 	// Contact endpoint
 	r.Post("/api/contact", handlers.Contact)
