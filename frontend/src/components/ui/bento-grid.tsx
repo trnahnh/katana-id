@@ -49,7 +49,7 @@ export const CARDS = [
   },
   {
     Icon: KeyRoundIcon,
-    name: "Authentication",
+    name: "Complete Authentication",
     description: "Social Login (OAuth), Email verification, OTP, Sessions. All handled for you.",
     href: "#",
     cta: "View docs",
