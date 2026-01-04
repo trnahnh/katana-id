@@ -17,9 +17,9 @@ const Footer = () => {
                         <p className="text-muted-foreground mt-4 text-sm text-start">
                             Auth, avatars, usernames, bot protection. Use what you need.
                         </p>
-                        <span className="mt-4 text-foreground/80 text-sm flex items-center">
-                            Made by <a href="https://shreyas-sihasane.vercel.app/" className="font-semibold ml-1">Shreyas</a>
-                        </span>
+                        <p className="mt-4 text-foreground/80 text-sm">
+                            Made by <a href="https://github.com/trnahnh" className="font-semibold hover:underline">Anh Tran</a> & <a href="https://github.com/suka712" className="font-semibold hover:underline">Khiem Nguyen</a>
+                        </p>
                     </div>
                 </AnimationContainer>
 
@@ -133,7 +133,7 @@ const Footer = () => {
 
             </div>
 
-            <div className="mt-8 border-t border-border/40 pt-4 md:pt-8 md:flex md:items-center md:justify-between w-full">
+            <div className="my-5 border-t border-border/40 pt-4 md:pt-8 md:flex md:items-center md:justify-between w-full max-w-6xl px-4">
                 <AnimationContainer delay={0.6}>
                     <p className="text-sm text-muted-foreground mt-8 md:mt-0">
                         &copy; {new Date().getFullYear()} KatanaID. All rights reserved.
