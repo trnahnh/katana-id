@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"crypto/rand"
+	mrand "math/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -24,11 +25,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// ---------------------------Signup---------------------------
+// -----------------------------------Signup-----------------------------------
 func Signup(w http.ResponseWriter, r *http.Request) {
 	var req SignupRequest
 
-	// Decode JSON body
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		log.Print("Error decoding JSON:", err)
@@ -40,7 +40,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	email := strings.ToLower(strings.TrimSpace(req.Email))       // Normalize. No duplicate
 	password := strings.TrimSpace(req.Password)
 
-	// Validate input
 	if username == "" || email == "" || password == "" {
 		log.Print("Request has empty field")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Username, email and password required"})
@@ -65,7 +64,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Print("Error generating password hash")
@@ -73,7 +71,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Begin transaction
+	// Begin transaction, if failed, roll back from here
 	ctx := context.Background()
 	tx, err := database.DB.Begin(ctx)
 	if err != nil {
@@ -83,7 +81,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	}
 	defer tx.Rollback(ctx)
 
-	// Insert user into database
 	var userID int
 	err = tx.QueryRow(
 		ctx,
@@ -137,8 +134,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Send verification email
-	err = sendVerificationEmail(rawEmailToken, email)
+	err = sendVerificationEmail(rawEmailToken, email, username)
 	if err != nil {
 		log.Print("Error sending verification email:", err)
 		writeJSON(w, http.StatusInternalServerError, ErrorResponse{Error: "Something went wrong"})
@@ -180,7 +176,7 @@ func VerifyEmail(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, VerificationSuccessResponse{Message: "Email verified"})
 }
 
-// ---------------------------Login---------------------------
+// -----------------------------------Login-----------------------------------
 func Login(w http.ResponseWriter, r *http.Request) {
 	var req LoginRequest
 
@@ -216,7 +212,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Compare password with hash
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		log.Print("Incorrect username or password")
@@ -231,10 +226,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Log successful login
 	log.Printf("User logged in: %s - %s", user.Username, user.Email)
-
-	// Success response
 	writeJSON(w, http.StatusOK, AuthSuccessResponse{
 		Token:    tokenString,
 		Username: user.Username,
@@ -243,7 +235,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// ---------------------------Helpers---------------------------
+// -----------------------------------Helpers-----------------------------------
 func generateSignedToken(userID int, username, email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id":  userID,
@@ -325,16 +317,23 @@ func verifyToken(ctx context.Context, db *pgxpool.Pool, incomingToken string) er
 	return nil
 }
 
-func sendVerificationEmail(token string, email string) error {
+func sendVerificationEmail(token string, email string, username string) error {
 	client := resend.NewClient(os.Getenv("RESEND_API_KEY"))
 
 	link := fmt.Sprintf("%s/auth/verify-email?token=%s", os.Getenv("BACKEND_URL"), token)
+	names := []string{"Anh", "Khiem"}
+	name := names[mrand.Intn(len(names))]
 
 	params := &resend.SendEmailRequest{
 		From:    "KatanaID <noreply@katanaid.com>",
 		To:      []string{email},
 		Subject: "KatanaID Email Verification",
-		Html:    fmt.Sprintf(`<p>Click the link below to verify your email</p><a href="%s">Verify Email</a>`, link),
+		Html:    fmt.Sprintf(`
+		<p>Hello, %s</p>
+		<br>
+		<p>This is %s from KatanaID</p>
+		<p>Click the link below to verify your email</p>
+		<a href="%s">Verify Email</a>`, username, name, link),
 	}
 
 	_, err := client.Emails.Send(params)
