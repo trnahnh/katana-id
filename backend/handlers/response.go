@@ -37,6 +37,10 @@ type AuthSuccessResponse struct {
 	Message  string `json:"message"`
 }
 
+type VerificationSuccessResponse struct {
+	Message string `json:"message"`
+}
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
