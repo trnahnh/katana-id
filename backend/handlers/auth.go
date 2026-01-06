@@ -153,7 +153,7 @@ func VerifyEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, http.StatusOK, map[string]string{"message": "Email verified"})
+	writeJSON(w, http.StatusOK, VerificationSuccessResponse{Message: "Email verified"})
 }
 
 // ---------------------------Login---------------------------
@@ -232,7 +232,6 @@ func generateSignedToken(userID int, username, email string) (string, error) {
 }
 
 var emailRegex = regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`)
-
 func isValidEmail(email string) bool {
 	return emailRegex.MatchString(email)
 }
