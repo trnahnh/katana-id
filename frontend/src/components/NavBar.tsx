@@ -70,7 +70,9 @@ const NavBar = () => {
               </div>
             </HoverCardContent>
           </HoverCard>
-          <Button variant="ghost">Demo</Button>
+          <Button variant="ghost" asChild>
+            <a href="http://docs.katanaid.com/">Documentations</a>
+          </Button>
           <ContactDialog>
             <Button variant="ghost">Contact</Button>
           </ContactDialog>
