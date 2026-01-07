@@ -31,7 +31,7 @@ type LoginRequest struct {
 
 type UsernameGenerationRequest struct {
 	Count string `json:"count"`
-	Selections string `json:"selections"`
+	Vibe  string `json:"vibe"`
 }
 
 // Shared by both login and signup
@@ -49,7 +49,6 @@ type VerificationSuccessResponse struct {
 type UsernameGenerationSuccessResponse struct {
 	Usernames string `json:"usernames"`
 }
-
 
 type ErrorResponse struct {
 	Error string `json:"error"`

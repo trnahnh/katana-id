@@ -3,9 +3,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"google.golang.org/genai"
 )
@@ -27,6 +29,13 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	vibe := strings.ToLower(strings.TrimSpace(req.Vibe))
+	if vibe == "" || len(vibe) > 15 {
+		log.Print("Invalid vibe")
+		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid request"})
+		return
+	}
+
 	if count > 10 || count < 0 {
 		log.Print("Invalid username request")
 		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid request"})
@@ -41,8 +50,12 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 
 	result, err := client.Models.GenerateContent(
 		ctx,
-		"gemini-3-flash-preview",
-		genai.Text("Generate six random username and output in csv format. No additional text"),
+		"gemini-2.0-flash",
+		genai.Text(fmt.Sprintf(
+			"Generate exactly %d unique usernames with a %s vibe. Output only the usernames separated by commas, no additional text, no spaces after commas, no numbering.",
+			count,
+			vibe,
+		)),
 		nil,
 	)
 	if err != nil {
