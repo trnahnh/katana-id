@@ -1,8 +1,9 @@
 # KatanaID
 
-Deepfake detection for images and videos.
+AI-integrated authentication toolkit - Open to contribution.
 
 **Checkout the app live:** [katanaid.com](https://katanaid.com)
+**Our documentations:** [docs.katanaid.com](http://docs.katanaid.com)
 
 ## Tech Stack
 
@@ -22,14 +23,15 @@ We are open to contribution to the project. Contact us via khiem@sukaseven.com o
 
 ```bash
 cd backend
-cp .env.example .env  # Configure your environment variables
+cp .env.example .env  # Copy and configure your env
 go run main.go
 ```
 
 ### Frontend
-
+Can either be ran with `npm` or `pnpm`
 ```bash
 cd frontend
+cp .env.example .env # Copy and configure your env
 npm install
 npm run dev
 ```
