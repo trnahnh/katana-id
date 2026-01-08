@@ -40,7 +40,7 @@ type AuthSuccessResponse struct {
 	Token         string `json:"token"`
 	Username      string `json:"username"`
 	Email         string `json:"email"`
-	EmailVerified bool   `json:"isVerified"`
+	EmailVerified bool   `json:"email_verified"`
 }
 
 type VerificationSuccessResponse struct {

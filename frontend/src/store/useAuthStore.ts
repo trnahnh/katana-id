@@ -73,7 +73,7 @@ export const useAuthStore = create<AuthStore>()(
             authUser: {
               username: res.data.username,
               email: res.data.email,
-              email_verified: res.data.email_verfied,
+              email_verified: res.data.email_verified,
             },
           });
           toast.success("Account created successfully.");
@@ -103,7 +103,7 @@ export const useAuthStore = create<AuthStore>()(
             authUser: {
               username: res.data.username,
               email: res.data.email,
-              email_verified: res.data.email_verfied,
+              email_verified: res.data.email_verified,
             },
           });
           toast.success("Logged in successfully.");
