@@ -8,12 +8,12 @@ interface RequireVerifiedProps {
 export default function RequireVerified({ children }: RequireVerifiedProps) {
   const { authUser } = useAuthStore();
 
-  // Not logged in - let other guards handle this
+  // When user is not logged in
   if (!authUser) {
     return <>{children}</>;
   }
 
-  // Unverified - show overlay
+  // When email is not verified
   if (!authUser.email_verified) {
     return (
       <div className="relative min-h-full">
@@ -23,6 +23,6 @@ export default function RequireVerified({ children }: RequireVerifiedProps) {
     );
   }
 
-  // Verified - render normally
+  // When email is verified
   return <>{children}</>;
 }

@@ -20,6 +20,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import Logo from "./Logo";
@@ -57,7 +58,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { toggleSidebar, state } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
 
   return (
@@ -65,10 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div
-              className="flex items-center gap-3 h-10"
-              onClick={() => toggleSidebar()}
-            >
+            <div className="flex items-center gap-3 h-10">
               <Logo />
               {state === "expanded" && <span>KatanaID</span>}
             </div>
@@ -102,6 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
