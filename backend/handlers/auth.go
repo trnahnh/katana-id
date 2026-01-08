@@ -163,19 +163,29 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 // -----------------------------------Verify email-----------------------------------
 func VerifyEmail(w http.ResponseWriter, r *http.Request) {
+	frontendURL := os.Getenv("FRONTEND_URL")
+
 	token := r.URL.Query().Get("token")
 	if token == "" {
-		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Missing authentication token"})
+		http.Redirect(w, r, fmt.Sprintf("%s/auth/verified?error=missing_token", frontendURL), http.StatusTemporaryRedirect)
 		return
 	}
 
-	err := verifyToken(r.Context(), database.DB, token)
+	userID, username, email, err := verifyToken(r.Context(), database.DB, token)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, ErrorResponse{Error: "Invalid token"})
+		http.Redirect(w, r, fmt.Sprintf("%s/auth/verified?error=invalid_token", frontendURL), http.StatusTemporaryRedirect)
 		return
 	}
 
-	writeJSON(w, http.StatusOK, VerificationSuccessResponse{Message: "Email verified"})
+	// Generate new JWT with email_verified: true
+	jwtToken, err := generateSignedToken(userID, username, email, true)
+	if err != nil {
+		http.Redirect(w, r, fmt.Sprintf("%s/auth/verified?error=token_generation_failed", frontendURL), http.StatusTemporaryRedirect)
+		return
+	}
+
+	log.Printf("User verified email: %s - %s", username, email)
+	http.Redirect(w, r, fmt.Sprintf("%s/auth/verified?token=%s", frontendURL, jwtToken), http.StatusTemporaryRedirect)
 }
 
 // -----------------------------------Login-----------------------------------
@@ -295,31 +305,38 @@ func deleteVerification(ctx context.Context, db *pgxpool.Pool, hashedToken strin
 	return err
 }
 
-func verifyToken(ctx context.Context, db *pgxpool.Pool, incomingToken string) error {
+func verifyToken(ctx context.Context, db *pgxpool.Pool, incomingToken string) (int, string, string, error) {
 	h := sha256.Sum256([]byte(incomingToken))
 	hashedToken := hex.EncodeToString(h[:])
 
 	userID, expiresAt, err := findVerification(ctx, db, hashedToken)
 	if err != nil {
-		return errors.New("invalid token")
+		return 0, "", "", errors.New("invalid token")
 	}
 
 	if time.Now().After(expiresAt) {
 		_ = deleteVerification(ctx, db, hashedToken)
-		return errors.New("token expired")
+		return 0, "", "", errors.New("token expired")
 	}
 
 	_, err = db.Exec(ctx, `UPDATE users SET email_verified = TRUE WHERE id = $1`, userID)
 	if err != nil {
-		return errors.New("failed to verify user")
+		return 0, "", "", errors.New("failed to verify user")
+	}
+
+	// Fetch user info for JWT generation
+	var username, email string
+	err = db.QueryRow(ctx, `SELECT username, email FROM users WHERE id = $1`, userID).Scan(&username, &email)
+	if err != nil {
+		return 0, "", "", errors.New("failed to fetch user")
 	}
 
 	err = deleteVerification(ctx, db, hashedToken)
 	if err != nil {
-		return err
+		return 0, "", "", err
 	}
 
-	return nil
+	return userID, username, email, nil
 }
 
 func sendVerificationEmail(token string, email string, username string) error {
