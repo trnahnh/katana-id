@@ -7,7 +7,7 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/Dashboard";
 import GenerativeIdentityPage from "./pages/GenerativeIdentityPage";
 import TrafficAnalyticsPage from "./pages/TrafficAnalyticsPage";
-import AuthCallbackPage from "./pages/AuthCallbackPage";
+import TokenCallbackPage from "./pages/AuthCallbackPage";
 import GridBackground from "./components/GridBackground";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 
@@ -35,7 +35,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Route>
-        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/auth/callback" element={<TokenCallbackPage />} />
+        <Route path="/auth/verified" element={<TokenCallbackPage />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="generative-identity" element={<GenerativeIdentityPage />} />

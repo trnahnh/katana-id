@@ -9,8 +9,30 @@ interface JWTPayload {
   user_id: number;
   username: string;
   email: string;
+  email_verfied: boolean;
   exp: number;
   iat: number;
+}
+
+interface AuthUser {
+  username: string;
+  email: string;
+  email_verified: boolean;
+}
+
+interface AuthStore {
+  authUser: AuthUser | null;
+  token: string | null;
+  isSigningUp: boolean;
+  isLoggingIn: boolean;
+  setOAuthToken: (token: string) => void;
+  signup: (signupData: {
+    username: string;
+    email: string;
+    password: string;
+  }) => Promise<void>;
+  login: (loginData: { email: string; password: string }) => Promise<void>;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -29,6 +51,7 @@ export const useAuthStore = create<AuthStore>()(
             authUser: {
               username: decoded.username,
               email: decoded.email,
+              email_verified: decoded.email_verfied,
             },
           });
           toast.success("Logged in successfully.");
@@ -50,6 +73,7 @@ export const useAuthStore = create<AuthStore>()(
             authUser: {
               username: res.data.username,
               email: res.data.email,
+              email_verified: res.data.email_verfied,
             },
           });
           toast.success("Account created successfully.");
@@ -79,6 +103,7 @@ export const useAuthStore = create<AuthStore>()(
             authUser: {
               username: res.data.username,
               email: res.data.email,
+              email_verified: res.data.email_verfied,
             },
           });
           toast.success("Logged in successfully.");
@@ -101,7 +126,7 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: () => {
         set({ token: null, authUser: null });
-        toast.success("Successfully logged out")
+        toast.success("Successfully logged out");
       },
     }),
     {
@@ -109,21 +134,3 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 );
-
-interface AuthStore {
-  authUser: {
-    username: string;
-    email: string;
-  } | null;
-  token: string | null;
-  isSigningUp: boolean;
-  isLoggingIn: boolean;
-  setOAuthToken: (token: string) => void;
-  signup: (signupData: {
-    username: string;
-    email: string;
-    password: string;
-  }) => Promise<void>;
-  login: (loginData: { email: string; password: string }) => Promise<void>;
-  logout: () => void;
-}

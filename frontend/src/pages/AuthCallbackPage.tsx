@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { toast } from "sonner";
 import { LucideLoader2 } from "lucide-react";
 
-export default function AuthCallbackPage() {
+export default function TokenCallbackPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setOAuthToken } = useAuthStore();
@@ -14,7 +14,7 @@ export default function AuthCallbackPage() {
     const error = searchParams.get("error");
 
     if (error) {
-      toast.error(`OAuth error: ${error}`);
+      toast.error(`Token error: ${error}`);
       navigate("/login");
       return;
     }
@@ -23,7 +23,7 @@ export default function AuthCallbackPage() {
       setOAuthToken(token);
       navigate("/dashboard");
     } else {
-      toast.error("No token received from OAuth provider.");
+      toast.error("No token received.");
       navigate("/login");
     }
   }, [searchParams, navigate, setOAuthToken]);
