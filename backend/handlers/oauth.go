@@ -18,7 +18,6 @@ import (
 
 	"katanaid/database"
 
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"golang.org/x/oauth2/google"
