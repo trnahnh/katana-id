@@ -265,18 +265,6 @@ func generateEmailVerificationToken() (raw string, hashed string, err error) {
 	return raw, hashed, nil
 }
 
-func storeVerification(
-	ctx context.Context,
-	db *pgxpool.Pool,
-	hashedToken string,
-	userID int, expiresAt time.Time) error {
-	_, err := db.Exec(ctx,
-		`INSERT INTO email_verifications (user_id, token_hash, expires_at) VALUES ($1, $2, $3)`,
-		userID, hashedToken, expiresAt,
-	)
-	return err
-}
-
 func findVerification(
 	ctx context.Context,
 	db *pgxpool.Pool,
