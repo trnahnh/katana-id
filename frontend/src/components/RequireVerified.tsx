@@ -17,7 +17,7 @@ export default function RequireVerified({ children }: RequireVerifiedProps) {
   if (!authUser.email_verified) {
     return (
       <div className="relative min-h-full">
-        <div className="pointer-events-none blur-xl opacity-50">{children}</div>
+        <div className="pointer-events-none blur-xs opacity-50">{children}</div>
         <VerificationOverlay email={authUser.email} />
       </div>
     );
