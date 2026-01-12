@@ -13,6 +13,7 @@ import DashboardLayout from "./components/layouts/DashboardLayout";
 import RequireVerified from "./components/RequireVerified";
 import EmailServicePage from "./pages/service-pages/EmailServicePage";
 import EmailFraudPage from "./pages/service-pages/EmailFraudPage";
+import CaptchaPage from "./pages/service-pages/CaptchaPage";
 
 const PublicLayout = () => (
   <>
@@ -71,6 +72,14 @@ function App() {
             element={
               <RequireVerified>
                 <EmailFraudPage />
+              </RequireVerified>
+            }
+          />
+          <Route
+            path="captcha"
+            element={
+              <RequireVerified>
+                <CaptchaPage />
               </RequireVerified>
             }
           />

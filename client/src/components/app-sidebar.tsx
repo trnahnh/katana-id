@@ -5,7 +5,8 @@ import {
   IconFingerprint,
   IconSettings,
   IconMailCode,
-  IconShieldCheck
+  IconShieldCheck,
+  IconShield,
 } from "@tabler/icons-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -26,6 +27,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Logo from "./Logo";
+
 
 const data = {
   user: {
@@ -53,6 +55,11 @@ const data = {
       title: "Email Fraud",
       url: "/dashboard/email-fraud",
       icon: IconShieldCheck,
+    },
+    {
+      title: "CAPTCHA",
+      url: "/dashboard/captcha",
+      icon: IconShield,
     }
   ],
   navSecondary: [
