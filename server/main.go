@@ -117,6 +117,12 @@ func main() {
 		r.Post("/identity/avatar", identityservice.GenerateAvatar)
 	})
 
+	r.Route("/api/dashboard", func(r chi.Router) {
+		r.Use(middleware.AuthMiddleware)
+		r.Use(middleware.RateLimiterPerMinute(60))
+		r.Get("/stats", handlers.GetDashboardStats)
+	})
+
 	r.Route("/api/spam", func(r chi.Router) {
 		r.Use(middleware.RateLimiterPerMinute(30))
 		r.Post("/email-check", spamservice.CheckEmail)

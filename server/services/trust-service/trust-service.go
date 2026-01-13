@@ -117,12 +117,34 @@ func CalculateTrustScore(w http.ResponseWriter, r *http.Request) {
 		recommendation = "captcha"
 	}
 
+	// Log trust score check (store fingerprint for tracking)
+	go logTrustCheck(fingerprintHash, ip, req.Fingerprint)
+
 	util.WriteJSON(w, http.StatusOK, TrustScoreResponse{
 		Score:          totalScore,
 		Signals:        signals,
 		Recommendation: recommendation,
 		FingerprintID:  fingerprintHash[:16], // Short ID for reference
 	})
+}
+
+func logTrustCheck(fingerprintHash, ip string, fp FingerprintData) {
+	_, err := database.DB.Exec(
+		context.Background(),
+		`INSERT INTO device_fingerprints 
+		 (fingerprint_hash, ip_address, user_agent, screen_resolution, timezone, language, platform)
+		 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+		fingerprintHash,
+		ip,
+		fp.UserAgent,
+		fp.ScreenResolution,
+		fp.Timezone,
+		fp.Language,
+		fp.Platform,
+	)
+	if err != nil {
+		log.Print("Error logging trust check:", err)
+	}
 }
 
 func RecordFingerprint(w http.ResponseWriter, r *http.Request) {

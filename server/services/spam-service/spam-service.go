@@ -3,6 +3,7 @@ package spamservice
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"embed"
 	"encoding/hex"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"unicode"
 
+	"katanaid/database"
 	"katanaid/models"
 	"katanaid/util"
 )
@@ -101,6 +103,10 @@ func CheckEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := analyzeEmail(email)
+
+	// Log the check to database
+	go logSpamCheck(email, result)
+
 	util.WriteJSON(w, http.StatusOK, result)
 }
 
@@ -134,6 +140,9 @@ func CheckEmailBulk(w http.ResponseWriter, r *http.Request) {
 
 		result := analyzeEmail(email)
 		results = append(results, result)
+
+		// Log each check to database
+		go logSpamCheck(email, result)
 
 		switch result.Suggestion {
 		case "allow":
@@ -276,4 +285,24 @@ func isNumericHeavy(localPart string) bool {
 func HashEmail(email string) string {
 	hash := sha256.Sum256([]byte(strings.ToLower(email)))
 	return hex.EncodeToString(hash[:])
+}
+
+func logSpamCheck(email string, result EmailCheckResult) {
+	parts := strings.Split(email, "@")
+	domain := ""
+	if len(parts) == 2 {
+		domain = parts[1]
+	}
+
+	_, err := database.DB.Exec(
+		context.Background(),
+		`INSERT INTO spam_checks (email_hash, domain, risk_score, flags) VALUES ($1, $2, $3, $4)`,
+		HashEmail(email),
+		domain,
+		result.RiskScore,
+		result.Flags,
+	)
+	if err != nil {
+		log.Print("Error logging spam check:", err)
+	}
 }

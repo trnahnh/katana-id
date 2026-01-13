@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"katanaid/database"
+	"katanaid/middleware"
 	"katanaid/models"
 	"katanaid/util"
 
@@ -86,6 +88,14 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 		log.Print("Error generating username:", err)
 		util.WriteJSON(w, http.StatusServiceUnavailable, models.ErrorResponse{Error: "Username generation quota exceeded"})
 		return
+	}
+
+	// Log usage to database
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if ok && user.UserID > 0 {
+		go logIdentityUsage(&user.UserID, "username", vibe, "success")
+	} else {
+		go logIdentityUsage(nil, "username", vibe, "success")
 	}
 
 	util.WriteJSON(w, http.StatusOK, UsernameGenerationSuccessResponse{Usernames: result.Text()})
@@ -165,5 +175,36 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	imageBytes := response.GeneratedImages[0].Image.ImageBytes
 	imageBase64 := base64.StdEncoding.EncodeToString(imageBytes)
 
+	// Log usage to database
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if ok && user.UserID > 0 {
+		go logIdentityUsage(&user.UserID, "avatar", style, "success")
+	} else {
+		go logIdentityUsage(nil, "avatar", style, "success")
+	}
+
 	util.WriteJSON(w, http.StatusOK, AvatarGenerationSuccessResponse{Image: imageBase64})
+}
+
+func logIdentityUsage(userID *int, generationType, details, result string) {
+	fileID := "gen-anonymous"
+	if userID != nil {
+		fileID = fmt.Sprintf("gen-%d", *userID)
+	}
+
+	_, err := database.DB.Exec(
+		context.Background(),
+		`INSERT INTO analyses (user_id, file_id, filename, file_type, result, confidence, details) 
+		 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+		userID,
+		fileID,
+		generationType,
+		"identity_generation",
+		result,
+		1.0,
+		details,
+	)
+	if err != nil {
+		log.Print("Error logging identity usage:", err)
+	}
 }

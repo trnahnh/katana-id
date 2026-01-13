@@ -1,6 +1,7 @@
 import { Route, Routes, Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import { Toaster } from "sonner";
+import { NavigationProgress } from "./components/ui/progress-bar";
 import LandingPage from "./pages/public-pages/LandingPage";
 import LoginPage from "./pages/public-pages/LoginPage";
 import SignupPage from "./pages/public-pages/SignupPage";
@@ -33,6 +34,7 @@ const PublicLayout = () => (
 function App() {
   return (
     <>
+      <NavigationProgress />
       <Toaster position="top-center" />
       <Routes>
         <Route element={<PublicLayout />}>
