@@ -8,13 +8,19 @@ import (
 	"strings"
 
 	"katanaid/database"
+	"katanaid/middleware"
 	"katanaid/models"
 	"katanaid/util"
 )
 
 // GetProfile returns current user's profile
 func GetProfile(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("user_id").(int)
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if !ok {
+		util.WriteJSON(w, http.StatusUnauthorized, models.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+	userID := user.UserID
 
 	var profile models.ProfileResponse
 	var firstName, lastName *string
@@ -39,7 +45,12 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("user_id").(int)
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if !ok {
+		util.WriteJSON(w, http.StatusUnauthorized, models.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+	userID := user.UserID
 
 	var req models.UpdateProfileRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
