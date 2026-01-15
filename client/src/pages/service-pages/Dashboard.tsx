@@ -275,7 +275,9 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">
-            Welcome back, {authUser?.username || "User"}
+          Welcome back, {authUser?.firstName && authUser?.lastName
+            ? `${authUser.firstName} ${authUser.lastName}`
+            : authUser?.username || "User"}
           </h1>
           <p className="text-muted-foreground">
             Here's an overview of your service usage
