@@ -445,12 +445,13 @@ func findOrCreateOAuthUser(email, name, provider string, emailVerified bool) (st
 
 	var userID int
 	var username string
+	var firstName, lastName *string
 
 	// Check if user exists
 	err = tx.QueryRow(ctx,
-		"SELECT id, username FROM users WHERE email = $1",
+		"SELECT id, username, first_name, last_name FROM users WHERE email = $1",
 		email,
-	).Scan(&userID, &username)
+	).Scan(&userID, &username, &firstName, &lastName)
 
 	if err != nil {
 		// User doesn't exist, create new one
@@ -490,8 +491,8 @@ func findOrCreateOAuthUser(email, name, provider string, emailVerified bool) (st
 		return "", fmt.Errorf("%w: %v", ErrDatabaseError, err)
 	}
 
-	// Generate JWT token
-	return generateSignedToken(userID, username, email, true)
+	// Generate JWT token with profile fields
+	return generateSignedTokenWithProfile(userID, username, email, true, firstName, lastName)
 }
 
 // sanitizeUsername removes invalid characters from username
