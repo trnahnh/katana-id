@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,59 +19,93 @@ import (
 	"google.golang.org/genai"
 )
 
-type AvatarGenerationRequest struct {
-	Style  string `json:"style"`
-	Traits string `json:"traits"`
-}
+var (
+	allowedVibes = map[string]bool{
+		"professional": true,
+		"fun":          true,
+		"tech":         true,
+		"gaming":       true,
+		"creative":     true,
+		"minimal":      true,
+		"cool":         true,
+		"random":       true,
+	}
 
-type UsernameGenerationSuccessResponse struct {
-	Usernames string `json:"usernames"`
-}
+	allowedStyles = map[string]bool{
+		"realistic":  true,
+		"anime":      true,
+		"cartoon":    true,
+		"pixel":      true,
+		"watercolor": true,
+		"minimalist": true,
+	}
 
-type AvatarGenerationSuccessResponse struct {
-	Image string `json:"image"`
-}
+	sanitizeRegex = regexp.MustCompile(`[^a-zA-Z0-9\s\-]`)
+)
 
 type UsernameGenerationRequest struct {
 	Count string `json:"count"`
 	Vibe  string `json:"vibe"`
 }
 
-func GenerateUsername(w http.ResponseWriter, r *http.Request) {
-	var req UsernameGenerationRequest
+type UsernameGenerationSuccessResponse struct {
+	Usernames string `json:"usernames"`
+}
 
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		log.Print("Error decoding JSON:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+type AvatarGenerationRequest struct {
+	Style  string `json:"style"`
+	Traits string `json:"traits"`
+}
+
+type AvatarGenerationSuccessResponse struct {
+	Image string `json:"image"`
+}
+
+func sanitizeInput(input string) string {
+	result := strings.ToLower(strings.TrimSpace(input))
+
+	dangerousPatterns := []string{
+		"ignore", "forget", "disregard", "override", "bypass",
+		"system:", "assistant:", "user:", "prompt:",
+		"```", "'''", "<<", ">>",
+	}
+
+	for _, pattern := range dangerousPatterns {
+		result = strings.ReplaceAll(result, pattern, "")
+	}
+
+	return strings.TrimSpace(sanitizeRegex.ReplaceAllString(result, ""))
+}
+
+func GenerateUsername(w http.ResponseWriter, r *http.Request) {
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if !ok {
+		util.WriteJSON(w, http.StatusUnauthorized, models.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+
+	var req UsernameGenerationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
 		return
 	}
 
 	count, err := strconv.Atoi(req.Count)
-	if err != nil {
-		log.Print("Invalid value for count:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+	if err != nil || count < 1 || count > 10 {
+		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Count must be between 1 and 10"})
 		return
 	}
 
 	vibe := strings.ToLower(strings.TrimSpace(req.Vibe))
-	if vibe == "" || len(vibe) > 15 {
-		log.Print("Invalid vibe")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
-		return
-	}
-
-	if count > 10 || count < 0 {
-		log.Print("Invalid username request")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
-		return
+	if !allowedVibes[vibe] {
+		vibe = "random"
 	}
 
 	ctx := context.Background()
 	client, err := genai.NewClient(ctx, nil)
 	if err != nil {
-		log.Print("Error creating AI client")
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Something went wrong"})
+		log.Print("Error creating AI client:", err)
+		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Service unavailable"})
 		return
 	}
 
@@ -86,77 +121,58 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Print("Error generating username:", err)
-		util.WriteJSON(w, http.StatusServiceUnavailable, models.ErrorResponse{Error: "Username generation quota exceeded"})
+		util.WriteJSON(w, http.StatusServiceUnavailable, models.ErrorResponse{Error: "Generation quota exceeded"})
 		return
 	}
 
-	// Log usage to database
-	user, ok := middleware.GetUserFromContext(r.Context())
-	if ok && user.UserID > 0 {
-		go logIdentityUsage(&user.UserID, "username", vibe, "success")
-	} else {
-		go logIdentityUsage(nil, "username", vibe, "success")
-	}
+	go logIdentityUsage(user.UserID, "username", vibe)
 
 	util.WriteJSON(w, http.StatusOK, UsernameGenerationSuccessResponse{Usernames: result.Text()})
 }
 
 func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
-	var req AvatarGenerationRequest
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if !ok {
+		util.WriteJSON(w, http.StatusUnauthorized, models.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
 
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		log.Print("Error decoding JSON:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+	var req AvatarGenerationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
 		return
 	}
 
 	style := strings.ToLower(strings.TrimSpace(req.Style))
-	traits := strings.TrimSpace(req.Traits)
-
-	// Validate style
-	allowedStyles := map[string]bool{
-		"realistic": true, "anime": true, "cartoon": true,
-		"pixel": true, "watercolor": true, "minimalist": true,
-	}
 	if !allowedStyles[style] {
-		log.Print("Invalid style:", style)
 		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid style"})
 		return
 	}
 
-	// Validate traits length
+	traits := sanitizeInput(req.Traits)
 	if len(traits) > 100 {
-		log.Print("Traits too long")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Traits must be 100 characters or less"})
-		return
+		traits = traits[:100]
 	}
 
 	ctx := context.Background()
 	client, err := genai.NewClient(ctx, nil)
 	if err != nil {
-		log.Print("Failed to create Gemini client:", err)
+		log.Print("Failed to create AI client:", err)
 		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Service unavailable"})
 		return
 	}
 
-	// Prompt building
 	prompt := fmt.Sprintf(
 		"Generate a profile avatar picture in %s art style. Traits: %s. Make it suitable for a social media profile picture, centered on the face/character, clean background.",
 		style,
 		traits,
 	)
 
-	// Use Imagen API for actual image generation
-	config := &genai.GenerateImagesConfig{
-		NumberOfImages: 1,
-	}
-
 	response, err := client.Models.GenerateImages(
 		ctx,
 		"imagen-4.0-generate-001",
 		prompt,
-		config,
+		&genai.GenerateImagesConfig{NumberOfImages: 1},
 	)
 	if err != nil {
 		log.Print("Imagen API error:", err)
@@ -164,43 +180,29 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if we got any images
 	if len(response.GeneratedImages) == 0 {
 		log.Print("No images generated")
 		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "No image generated"})
 		return
 	}
 
-	// Get the first generated image and encode to base64
-	imageBytes := response.GeneratedImages[0].Image.ImageBytes
-	imageBase64 := base64.StdEncoding.EncodeToString(imageBytes)
+	imageBase64 := base64.StdEncoding.EncodeToString(response.GeneratedImages[0].Image.ImageBytes)
 
-	// Log usage to database
-	user, ok := middleware.GetUserFromContext(r.Context())
-	if ok && user.UserID > 0 {
-		go logIdentityUsage(&user.UserID, "avatar", style, "success")
-	} else {
-		go logIdentityUsage(nil, "avatar", style, "success")
-	}
+	go logIdentityUsage(user.UserID, "avatar", style)
 
 	util.WriteJSON(w, http.StatusOK, AvatarGenerationSuccessResponse{Image: imageBase64})
 }
 
-func logIdentityUsage(userID *int, generationType, details, result string) {
-	fileID := "gen-anonymous"
-	if userID != nil {
-		fileID = fmt.Sprintf("gen-%d", *userID)
-	}
-
+func logIdentityUsage(userID int, generationType, details string) {
 	_, err := database.DB.Exec(
 		context.Background(),
 		`INSERT INTO analyses (user_id, file_id, filename, file_type, result, confidence, details) 
 		 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
 		userID,
-		fileID,
+		fmt.Sprintf("gen-%d", userID),
 		generationType,
 		"identity_generation",
-		result,
+		"success",
 		1.0,
 		details,
 	)
