@@ -106,18 +106,19 @@ func main() {
 
 	r.With(middleware.RateLimiterPerHour(3)).Post("/api/contact", handlers.Contact)
 
-	r.Get("/auth/google", handlers.GoogleLogin)
-	r.Get("/auth/google/callback", handlers.GoogleCallback)
-	r.Get("/auth/github", handlers.GitHubLogin)
-	r.Get("/auth/github/callback", handlers.GitHubCallback)
+	r.With(middleware.RateLimiterPerMinute(10)).Get("/auth/google", handlers.GoogleLogin)
+	r.With(middleware.RateLimiterPerMinute(10)).Get("/auth/google/callback", handlers.GoogleCallback)
+	r.With(middleware.RateLimiterPerMinute(10)).Get("/auth/github", handlers.GitHubLogin)
+	r.With(middleware.RateLimiterPerMinute(10)).Get("/auth/github/callback", handlers.GitHubCallback)
 
-	r.With(middleware.AuthMiddleware).Get("/user/profile", handlers.GetProfile)
-	r.With(middleware.AuthMiddleware).Patch("/user/profile", handlers.UpdateProfile)
+	r.With(middleware.AuthMiddleware, middleware.RateLimiterPerMinute(30)).Get("/user/profile", handlers.GetProfile)
+	r.With(middleware.AuthMiddleware, middleware.RateLimiterPerMinute(30)).Patch("/user/profile", handlers.UpdateProfile)
 
-	r.Route("/api", func(r chi.Router) {
-		r.Use(middleware.RateLimiterPerHour(3))
-		r.Post("/identity/username", identityservice.GenerateUsername)
-		r.Post("/identity/avatar", identityservice.GenerateAvatar)
+	r.Route("/api/identity", func(r chi.Router) {
+		r.Use(middleware.AuthMiddleware)
+		r.Use(middleware.RateLimiterPerHour(10))
+		r.Post("/username", identityservice.GenerateUsername)
+		r.Post("/avatar", identityservice.GenerateAvatar)
 	})
 
 	r.Route("/api/dashboard", func(r chi.Router) {
@@ -141,7 +142,7 @@ func main() {
 	r.Route("/api/trust", func(r chi.Router) {
 		r.Use(middleware.RateLimiterPerMinute(30))
 		r.Post("/score", trustservice.CalculateTrustScore)
-		r.Post("/record", trustservice.RecordFingerprint)
+		r.With(middleware.AuthMiddleware).Post("/record", trustservice.RecordFingerprint)
 	})
 
 	port := os.Getenv("PORT")
