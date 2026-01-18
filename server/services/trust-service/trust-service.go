@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"katanaid/database"
+	"katanaid/middleware"
 	"katanaid/models"
 	"katanaid/util"
 )
@@ -147,12 +148,23 @@ func logTrustCheck(fingerprintHash, ip string, fp FingerprintData) {
 	}
 }
 
+type RecordFingerprintRequest struct {
+	Fingerprint FingerprintData `json:"fingerprint"`
+}
+
+type RecordFingerprintResponse struct {
+	Status      string `json:"status"`
+	Fingerprint string `json:"fingerprint"`
+}
+
 func RecordFingerprint(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Fingerprint FingerprintData `json:"fingerprint"`
-		UserID      *int            `json:"user_id,omitempty"`
+	user, ok := middleware.GetUserFromContext(r.Context())
+	if !ok {
+		util.WriteJSON(w, http.StatusUnauthorized, models.ErrorResponse{Error: "Unauthorized"})
+		return
 	}
 
+	var req RecordFingerprintRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
 		return
@@ -161,14 +173,13 @@ func RecordFingerprint(w http.ResponseWriter, r *http.Request) {
 	ip := getClientIP(r)
 	fingerprintHash := generateFingerprintHash(req.Fingerprint)
 
-	// Store fingerprint
 	_, err := database.DB.Exec(
 		context.Background(),
 		`INSERT INTO device_fingerprints 
 		 (fingerprint_hash, user_id, ip_address, user_agent, screen_resolution, timezone, language, platform)
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
 		fingerprintHash,
-		req.UserID,
+		user.UserID,
 		ip,
 		req.Fingerprint.UserAgent,
 		req.Fingerprint.ScreenResolution,
@@ -176,14 +187,12 @@ func RecordFingerprint(w http.ResponseWriter, r *http.Request) {
 		req.Fingerprint.Language,
 		req.Fingerprint.Platform,
 	)
-
 	if err != nil {
 		log.Print("Error storing fingerprint:", err)
 		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to record"})
 		return
 	}
 
-	// Update IP signup count
 	_, err = database.DB.Exec(
 		context.Background(),
 		`INSERT INTO ip_signups (ip_address, signup_count, first_signup_at, last_signup_at)
@@ -193,14 +202,13 @@ func RecordFingerprint(w http.ResponseWriter, r *http.Request) {
 		 last_signup_at = NOW()`,
 		ip,
 	)
-
 	if err != nil {
 		log.Print("Error updating IP signups:", err)
 	}
 
-	util.WriteJSON(w, http.StatusOK, map[string]string{
-		"status":      "recorded",
-		"fingerprint": fingerprintHash[:16],
+	util.WriteJSON(w, http.StatusOK, RecordFingerprintResponse{
+		Status:      "recorded",
+		Fingerprint: fingerprintHash[:16],
 	})
 }
 
