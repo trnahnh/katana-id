@@ -1,10 +1,5 @@
 import { Button } from "./ui/button";
-import { ArrowRight, ChevronDown, Github, Menu } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@radix-ui/react-hover-card";
+import { ArrowRight, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import Logo from "./Logo";
@@ -35,43 +30,8 @@ const NavBar = () => {
 
         {/* Desktop nav - hidden on mobile */}
         <div className="flex-1 hidden md:flex items-center justify-center gap-3">
-          <HoverCard openDelay={100} closeDelay={200}>
-            <HoverCardTrigger asChild>
-              <Button variant="ghost" className="group gap-1">
-                Developers
-                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent
-              className="w-44 p-1.5 bg-popover/95 backdrop-blur-md rounded-lg border border-border/50 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2"
-              sideOffset={8}
-            >
-              <div className="flex flex-col">
-                <a
-                  href="https://github.com/suka712"
-                  className="px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                >
-                  Khiem Nguyen
-                </a>
-                <a
-                  href="https://github.com/trnahnh"
-                  className="px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                >
-                  Anh Tran
-                </a>
-                <div className="my-1.5 border-t border-border/50" />
-                <a
-                  href="https://github.com/trnahnh/katanaid"
-                  className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub
-                </a>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
           <Button variant="ghost" asChild>
-            <a href="https://docs.katanaid.com/">Documentations</a>
+            <a href="https://docs.katanaid.com/">Docs</a>
           </Button>
           <ContactDialog>
             <Button variant="ghost">Contact</Button>
@@ -110,35 +70,14 @@ const NavBar = () => {
             </SheetTrigger>
             <SheetContent side="right" className="">
               <div className="flex flex-col gap-4 mt-4 px-5 pt-10">
-                <Button variant="ghost" className="justify-start">
-                  Demo
+                <Button variant="ghost" className="justify-start" asChild>
+                  <a href="https://docs.katanaid.com/">Docs</a>
                 </Button>
                 <ContactDialog>
                   <Button variant="ghost" className="justify-start">
                     Contact
                   </Button>
                 </ContactDialog>
-                <div className="flex flex-col gap-1 pt-4 border-t border-border/50">
-                  <a
-                    href="https://github.com/suka712"
-                    className="px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                  >
-                    Khiem Nguyen
-                  </a>
-                  <a
-                    href="https://github.com/trnahnh"
-                    className="px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                  >
-                    Anh Tran
-                  </a>
-                  <a
-                    href="https://github.com/trnahnh/katanaid"
-                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                  >
-                    <Github className="h-4 w-4" />
-                    GitHub
-                  </a>
-                </div>
                 <div className="border-t pt-4 flex flex-col gap-2">
                   {token === null ? (
                     <Button
@@ -161,7 +100,7 @@ const NavBar = () => {
                     </Button>
                   )}
                   <Button variant="default" className="w-full justify-start">
-                    Verify content <ArrowRight />
+                    Build now <ArrowRight />
                   </Button>
                 </div>
               </div>

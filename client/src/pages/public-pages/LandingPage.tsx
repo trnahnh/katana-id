@@ -1,6 +1,5 @@
 import { ArrowRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import dashboardImg from "@/assets/dashboard-example.png";
 import AnimationContainer from "@/components/ui/animation-container";
 import MaxWidthWrapper from "@/components/ui/max-width-container";
 import { BentoCard, BentoGrid, CARDS } from "@/components/ui/bento-grid";
@@ -9,6 +8,7 @@ import MagicBadge from "@/components/ui/magic-badge";
 import { LampContainer } from "@/components/ui/lamp";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
+import { Input } from "@/components/ui/input";
 
 const LandingPage = () => {
   return (
@@ -16,102 +16,44 @@ const LandingPage = () => {
       {/* ----------------------------------NavBar---------------------------------- */}
       <NavBar />
       {/* ----------------------------------Hero Section---------------------------------- */}
-      <div className="relative z-10 flex flex-col justify-center pt-10 md:pt-20 items-center">
-        <MagicBadge title="AI Authentication Suite" />
-        <h1 className="text-5xl md:text-8xl leading-tight text-center mt-5 max-w-6xl">
-          The{" "}
-          <span className="bg-linear-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_5px_--theme(--color-blue-500/80%)]">
-            Branding toolkit
-          </span>{" "}
-          Your Platform{" "}
-          <span className="bg-linear-to-r from-white to-slate-400 bg-clip-text text-transparent drop-shadow-[0_0_5px_var(--color-slate-400)]">
-            Needs
+      <div className="flex flex-col justify-center items-center pt-22 md:pt-50">
+        <MagicBadge title="Branding Toolkit" />
+        <h1 className="text-4xl md:text-6xl leading-tight text-center mt-5 max-w-4xl">
+          Find the perfect name for your next project.{" "}
+          <span className="bg-linear-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+            Everywhere.
           </span>
         </h1>
-        <div className="text-center mt-6 text-accent-foreground">
-          <p className="text-sm md:text-xl max-w-xl">
-            Authentication, user identity, spam protection. <br />
-            Katana gives you{" "}
-            <span className="bg-linear-to-r from-blue-500 to-white bg-clip-text text-transparent">
-              one Toolkit
-            </span>{" "}
-            to nail them all.
-            <br />
-            <span className="bg-linear-to-r from-white to-amber-300 bg-clip-text text-transparent">
-              Start free
-            </span>
-            , scale when you're ready.
-          </p>
-        </div>
-        <div className="flex items-center justify-center gap-4 mt-10">
-          <Button asChild>
-            <Link to="/dashboard" className="flex items-center">
-              Start building for free
-              <ArrowRightIcon className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/login">Sign In</Link>
+        <p className="text-lg text-muted-foreground mt-4 text-center max-w-xl">
+          Domains, Social handles, Search presence — all in one click.
+        </p>
+
+        <div className="flex items-center justify-center gap-2 mt-12">
+          <Input placeholder='I am building Tinder but for Dog lovers called "Ruffle" ...' className="w-2xs md:w-md shadow-blue-100" />
+          <Button variant="outline" asChild className="shadow-xl shadow-blue-100">
+            <Link to="/login">Check</Link>
           </Button>
         </div>
+
+        {/* <Badge variant="default">Badge</Badge> */}
       </div>
 
-      {/* ----------------------------------Image Bento Grid---------------------------------- */}
-      <div className="relative z-10 py-25 px-4 w-full max-w-6xl mx-auto">
-        {/* Glow behind grid */}
-        <div className="absolute inset-10 bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
-        <div className="relative grid grid-cols-3 grid-rows-2 gap-4 h-125">
-          {/* Large image - spans 2 columns */}
-          <div className="col-span-2 row-span-1 relative rounded-xl overflow-hidden ring-1 ring-foreground/20">
-            <img
-              src={dashboardImg}
-              alt="Dashboard"
-              className="w-full h-full object-cover p-2 rounded-2xl"
-            />
-          </div>
-          {/* Top right - tall image spans 2 rows */}
-          <div className="col-span-1 row-span-2 relative rounded-xl overflow-hidden ring-1 ring-foreground/20">
-            <img
-              src={dashboardImg}
-              alt="Dashboard"
-              className="w-full h-full object-cover p-2 rounded-2xl"
-            />
-          </div>
-          {/* Bottom left */}
-          <div className="col-span-1 row-span-1 relative rounded-xl overflow-hidden ring-1 ring-foreground/20">
-            <img
-              src={dashboardImg}
-              alt="Dashboard"
-              className="w-full h-full object-cover p-2 rounded-2xl"
-            />
-          </div>
-          {/* Bottom middle */}
-          <div className="col-span-1 row-span-1 relative rounded-xl overflow-hidden ring-1 ring-foreground/20">
-            <img
-              src={dashboardImg}
-              alt="Dashboard"
-              className="w-full h-full object-cover p-2 rounded-2xl"
-            />
-          </div>
-        </div>
-        {/* Fade overlay */}
-        <div className="absolute bottom-10 left-0 right-0 h-1/3 bg-linear-to-t from-background from-30% via-background/50 to-transparent pointer-events-none rounded-2xl" />
-      </div>
 
       {/* ----------------------------------Features section---------------------------------- */}
-      <MaxWidthWrapper className="py-15 relative z-10">
+      <MaxWidthWrapper className="pt-50 md:pt-70 relative z-10">
         <AnimationContainer delay={0.1}>
           <div className="flex flex-col w-full items-center justify-center py-8">
             <MagicBadge title="Features" />
             <h2 className="text-center text-3xl md:text-5xl leading-tight font-medium font-heading text-foreground mt-6">
-              Everything your onboar
-              <span className="bg-linear-to-r from-white to-blue-500 bg-clip-text text-transparent">
-                ding needs
+              Everything you need to{" "}
+              <span className="bg-linear-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+                name your brand
               </span>
               .
             </h2>
-            <p className="text-sm md:text-xl mt-4 text-center text-accent-foreground max-w-lg">
-              Sessions, tokens, Social sign in, multifactor authentication handled. Drop-in components that make auth seamless and effortless.
+            <p className="text-sm md:text-xl mt-4 text-center text-muted-foreground max-w-lg">
+              Check availability across domains, package registries, social
+              platforms, and search engines — all at once.
             </p>
           </div>
         </AnimationContainer>
@@ -130,15 +72,18 @@ const LandingPage = () => {
           <LampContainer>
             <div className="flex flex-col items-center justify-center relative w-full text-center max-w-3xl">
               <h2 className="text-3xl md:text-5xl pt-7 bg-clip-text text-center leading-tight font-medium font-heading tracking-tight">
-                Start now, no strings attached.
+                Ship your brand faster.
               </h2>
-              <p className="text-sm md:text-xl text-accent-foreground mt-4 max-w-md mx-auto">
-                Grab your API key and integrate in minutes. Free up to your first 10,000 monthly active users.
+              <p className="text-sm md:text-xl text-muted-foreground mt-4 max-w-md mx-auto">
+                Stop Googling one platform at a time. Check everything in
+                seconds — free to start.
               </p>
               <div className="mt-6">
-                <Button>
-                  Get your API key
-                  <ArrowRightIcon className="w-4 h-4 ml-2" />
+                <Button asChild>
+                  <Link to="/login">
+                    Check your name
+                    <ArrowRightIcon className="w-4 h-4 ml-2" />
+                  </Link>
                 </Button>
               </div>
             </div>

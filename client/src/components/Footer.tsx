@@ -54,22 +54,22 @@ const Footer = () => {
                         <AnimationContainer delay={0.3}>
                             <div className="mt-10 md:mt-0 flex flex-col">
                                 <h3 className="text-base font-medium text-foreground">
-                                    Integrations
+                                    Platforms
                                 </h3>
                                 <ul className="mt-4 text-sm text-muted-foreground">
                                     <li>
-                                        <a href="https://www.facebook.com/anhtranthedr.7/" className="hover:text-foreground transition-all duration-300">
-                                            Facebook
+                                        <a href="" className="hover:text-foreground transition-all duration-300">
+                                            GitHub
                                         </a>
                                     </li>
                                     <li className="mt-2">
-                                        <a href="https://www.instagram.com/trnahnh/" className="hover:text-foreground transition-all duration-300">
-                                            Instagram
+                                        <a href="" className="hover:text-foreground transition-all duration-300">
+                                            npm
                                         </a>
                                     </li>
                                     <li className="mt-2">
-                                        <a href="https://www.linkedin.com/in/anhdtran11/" className="hover:text-foreground transition-all duration-300">
-                                            LinkedIn
+                                        <a href="" className="hover:text-foreground transition-all duration-300">
+                                            Social Media
                                         </a>
                                     </li>
                                 </ul>
