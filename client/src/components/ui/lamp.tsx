@@ -37,7 +37,7 @@ export const LampContainer = ({
             duration: 0.8,
             ease: "easeInOut",
           }}
-          className="absolute inset-auto z-50 h-px w-60 md:w-120 bg-white shadow-[0_0_10px_2px_rgba(255,255,255,0.8)]"
+          className="absolute inset-auto z-50 h-px w-60 md:w-120 bg-gray-100 shadow-[0_0_10px_2px_rgba(255,255,255,0.8)]"
         ></motion.div>
       </div>
       <div className="relative z-50 flex flex-col items-center px-5">

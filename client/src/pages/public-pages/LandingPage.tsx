@@ -9,6 +9,8 @@ import { LampContainer } from "@/components/ui/lamp";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
 import { Input } from "@/components/ui/input";
+import { Comparison } from "@/components/landing-page/Comparison";
+import { SideScroll } from "@/components/landing-page/SideScroll";
 
 const LandingPage = () => {
   return (
@@ -34,11 +36,10 @@ const LandingPage = () => {
             <Link to="/login">Check</Link>
           </Button>
         </div>
-
-        {/* <Badge variant="default">Badge</Badge> */}
       </div>
 
-
+      {/* ----------------------------------Side scroll---------------------------------- */}
+      <SideScroll />
       {/* ----------------------------------Features section---------------------------------- */}
       <MaxWidthWrapper className="pt-50 md:pt-70 relative z-10">
         <AnimationContainer delay={0.1}>
@@ -66,8 +67,11 @@ const LandingPage = () => {
         </AnimationContainer>
       </MaxWidthWrapper>
 
-      {/* ----------------------------------CTA section---------------------------------- */}
-      <MaxWidthWrapper className="my-15 pb-80 max-w-[80vw] overflow-x-hidden scrollbar-hide">
+      {/* ----------------------------------Comparison---------------------------------- */}
+      <Comparison />
+
+      {/* ----------------------------------CTA---------------------------------- */}
+      <MaxWidthWrapper className="mt-60 pb-70 max-w-[80vw] overflow-x-hidden scrollbar-hide">
         <AnimationContainer delay={0.1}>
           <LampContainer>
             <div className="flex flex-col items-center justify-center relative w-full text-center max-w-3xl">
