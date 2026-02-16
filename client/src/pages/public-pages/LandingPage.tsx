@@ -29,8 +29,8 @@ const LandingPage = () => {
         </p>
 
         <div className="flex items-center justify-center gap-2 mt-12">
-          <Input placeholder='I am building Tinder but for Dog lovers called "Ruffle" ...' className="w-2xs md:w-md shadow-blue-100" />
-          <Button variant="outline" asChild className="shadow-xl shadow-blue-100">
+          <Input placeholder='I am building Tinder but for Dog lovers called "Ruffle" . . .' className="w-2xs md:w-md shadow-blue-200" />
+          <Button variant="outline" asChild className="shadow-xl shadow-blue-200">
             <Link to="/login">Check</Link>
           </Button>
         </div>

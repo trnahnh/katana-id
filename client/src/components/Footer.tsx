@@ -15,7 +15,9 @@ const Footer = () => {
                             <Logo />
                         </div>
                         <p className="mt-4 text-foreground/80 text-sm">
-                            KatanaID by <a href="https://github.com/trnahnh" className="font-semibold hover:underline">Anh Tran</a> & <a href="https://github.com/suka712" className="font-semibold hover:underline">Khiem Nguyen</a>
+                            KatanaID by <a href="https://github.com/trnahnh" className="font-semibold hover:underline">Anh Tran</a>
+                            {" "}&{" "}
+                            <a href="https://github.com/suka712" className="font-semibold hover:underline">Khiem Nguyen</a>
                         </p>
                     </div>
                 </AnimationContainer>
