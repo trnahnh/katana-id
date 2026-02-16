@@ -49,18 +49,6 @@ var (
 )
 
 func InitOAuth() error {
-	requiredVars := []string{
-		"GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET",
-		"GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET",
-		"FRONTEND_URL", "BACKEND_URL", "JWT_SECRET",
-	}
-
-	for _, v := range requiredVars {
-		if os.Getenv(v) == "" {
-			return fmt.Errorf("missing required environment variable: %s", v)
-		}
-	}
-
 	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 	if len(jwtSecret) < 32 {
 		return errors.New("JWT_SECRET must be at least 32 characters")
