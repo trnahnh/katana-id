@@ -77,8 +77,8 @@ export const Comparison = () => {
               <BrowserTab url="instagram.com/ruffle" className="absolute top-40 left-10 rotate-[-2deg] z-[5] opacity-85" />
               <BrowserTab url="google.com/search?q=ruffle" className="absolute top-52 right-2 rotate-[1.5deg] z-[6] opacity-90" />
               {/* Tab counter */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-card border border-border/60 rounded-full px-4 py-1.5 shadow-lg z-10">
-                <span className="text-xs text-muted-foreground font-mono">12 tabs open...</span>
+              <div className="absolute bottom-60 left-1/2 -translate-x-1/2 bg-card border border-border/60 rounded-full px-4 py-1.5 shadow-lg z-10">
+                <span className="text-xs font-mono">16 tabs open...</span>
               </div>
             </div>
           </div>
