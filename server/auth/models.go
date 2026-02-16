@@ -11,7 +11,6 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-// Shared by both login and signup
 type AuthSuccessResponse struct {
 	Token         string `json:"token"`
 	Username      string `json:"username"`
