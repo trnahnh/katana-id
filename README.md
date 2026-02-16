@@ -36,4 +36,4 @@ npm install
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173` and the backend at `http://localhost:8080`.
+The frontend runs on `http://localhost:5173` and the backend on `http://localhost:8080`.
