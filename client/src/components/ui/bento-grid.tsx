@@ -2,46 +2,58 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
 import {
   ArrowRightIcon,
+  SparklesIcon,
   GlobeIcon,
-  GithubIcon,
   AtSignIcon,
   SearchIcon,
+  FileTextIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
 export const CARDS = [
+  // First row
+  {
+    Icon: SparklesIcon,
+    name: "Generate the perfect name",
+    description:
+      "Describe what you're building and we'll generate brand name candidates that are memorable, available, and ready to claim.",
+    href: "#",
+    cta: "Describe your idea",
+    className: "col-span-2 lg:col-span-2",
+  },
   {
     Icon: GlobeIcon,
-    name: "Domain Check",
+    name: "Domain Availability",
     description:
-      "Instantly check .com, .dev, .io and dozens more TLDs. See what's taken and what's yours for the taking.",
+      "Check .com, .dev, .io, and dozens more TLDs instantly. See what's taken, what's premium, and what's yours.",
     href: "#",
-    cta: "Learn more",
-    className: "col-span-3 lg:col-span-1",
+    cta: "Check and claim now",
+    className: "col-span-2 lg:col-span-1",
   },
-  {
-    Icon: GithubIcon,
-    name: "GitHub & npm",
-    description:
-      "Check org and repo availability on GitHub, plus npm package names. Lock down your developer presence early.",
-    href: "#",
-    cta: "Learn more",
-    className: "col-span-3 lg:col-span-2",
-  },
+  // Second row
   {
     Icon: AtSignIcon,
     name: "Social Handles",
     description:
-      "Search Twitter/X, Instagram, TikTok, Reddit, and more. Find a consistent handle across every platform.",
+      "Twitter/X, Instagram, TikTok, Reddit — check handle availability across every platform in one shot.",
     href: "#",
-    cta: "Learn more",
-    className: "col-span-3 lg:col-span-2",
+    cta: "Grab them all",
+    className: "col-span-2 lg:col-span-1",
   },
   {
     Icon: SearchIcon,
     name: "Search Presence",
     description:
-      "See how crowded your name is on Google. Know if you'll rank or get buried before you commit.",
+      "See how crowded your name is on Google, the App Store, and Play Store before you commit to it.",
+    className: "col-span-3 lg:col-span-1",
+    href: "#",
+    cta: "See how you rank",
+  },
+  {
+    Icon: FileTextIcon,
+    name: "Summary report",
+    description:
+      "Get a shareable summary and comparison of every check — availability, conflicts, and top picks — to share with your team.",
     className: "col-span-3 lg:col-span-1",
     href: "#",
     cta: "Learn more",
@@ -58,7 +70,7 @@ const BentoGrid = ({
   return (
     <div
       className={cn(
-        "grid w-full  grid-cols-3 gap-4",
+        "grid w-full grid-cols-3 gap-4",
         className
       )}
     >
