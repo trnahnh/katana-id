@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"os"
 
+	"katanaid/auth"
+	"katanaid/contact"
 	"katanaid/database"
-	"katanaid/handlers"
+	"katanaid/health"
+	"katanaid/identity"
 	"katanaid/middleware"
-	"katanaid/services/identity-service"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
@@ -73,7 +75,7 @@ func main() {
 	database.Connect()
 	defer database.Close()
 
-	if err := handlers.InitOAuth(); err != nil {
+	if err := auth.InitOAuth(); err != nil {
 		log.Fatal("Failed to initialize OAuth:", err)
 	}
 
@@ -92,27 +94,27 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	r.Get("/health", handlers.Health)
+	r.Get("/health", health.Health)
 
 	r.Route("/auth", func(r chi.Router) {
 		r.Use(middleware.RateLimiterPerMinute(12))
-		r.Post("/signup", handlers.Signup)
-		r.Post("/login", handlers.Login)
-		r.Get("/verify-email", handlers.VerifyEmail)
+		r.Post("/signup", auth.Signup)
+		r.Post("/login", auth.Login)
+		r.Get("/verify-email", auth.VerifyEmail)
 	})
 
-	r.With(middleware.RateLimiterPerHour(3)).Post("/api/contact", handlers.Contact)
+	r.With(middleware.RateLimiterPerHour(3)).Post("/api/contact", contact.Contact)
 
-	r.Get("/auth/google", handlers.GoogleLogin)
-	r.Get("/auth/google/callback", handlers.GoogleCallback)
-	r.Get("/auth/github", handlers.GitHubLogin)
-	r.Get("/auth/github/callback", handlers.GitHubCallback)
+	r.Get("/auth/google", auth.GoogleLogin)
+	r.Get("/auth/google/callback", auth.GoogleCallback)
+	r.Get("/auth/github", auth.GitHubLogin)
+	r.Get("/auth/github/callback", auth.GitHubCallback)
 
 	r.Route("/api", func(r chi.Router) {
 		r.Use(middleware.AuthMiddleware)
 		r.Use(middleware.RateLimiterPerHour(3))
-		r.Post("/identity/username", identityservice.GenerateUsername)
-		r.Post("/identity/avatar", identityservice.GenerateAvatar)
+		r.Post("/identity/username", identity.GenerateUsername)
+		r.Post("/identity/avatar", identity.GenerateAvatar)
 	})
 
 	port := os.Getenv("PORT")

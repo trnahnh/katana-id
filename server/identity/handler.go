@@ -1,4 +1,4 @@
-package identityservice
+package identity
 
 import (
 	"context"
@@ -10,29 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"katanaid/models"
-	"katanaid/util"
+	"katanaid/shared"
 
 	"google.golang.org/genai"
 )
-
-type AvatarGenerationRequest struct {
-	Style  string `json:"style"`
-	Traits string `json:"traits"`
-}
-
-type UsernameGenerationSuccessResponse struct {
-	Usernames string `json:"usernames"`
-}
-
-type AvatarGenerationSuccessResponse struct {
-	Image string `json:"image"`
-}
-
-type UsernameGenerationRequest struct {
-	Count string `json:"count"`
-	Vibe  string `json:"vibe"`
-}
 
 func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	var req UsernameGenerationRequest
@@ -40,14 +21,14 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		log.Print("Error decoding JSON:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
 	count, err := strconv.Atoi(req.Count)
 	if err != nil {
 		log.Print("Invalid value for count:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
@@ -58,13 +39,13 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	}
 	if !allowedVibes[vibe] {
 		log.Print("Invalid vibe:", vibe)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Invalid request"})
 		return
 	}
 
 	if count > 10 || count < 0 {
 		log.Print("Invalid username request")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid request"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Invalid request"})
 		return
 	}
 
@@ -72,7 +53,7 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	client, err := genai.NewClient(ctx, nil)
 	if err != nil {
 		log.Print("Error creating AI client")
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Something went wrong"})
+		shared.WriteJSON(w, http.StatusInternalServerError, shared.ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
@@ -88,11 +69,11 @@ func GenerateUsername(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Print("Error generating username:", err)
-		util.WriteJSON(w, http.StatusServiceUnavailable, models.ErrorResponse{Error: "Username generation quota exceeded"})
+		shared.WriteJSON(w, http.StatusServiceUnavailable, shared.ErrorResponse{Error: "Username generation quota exceeded"})
 		return
 	}
 
-	util.WriteJSON(w, http.StatusOK, UsernameGenerationSuccessResponse{Usernames: result.Text()})
+	shared.WriteJSON(w, http.StatusOK, UsernameGenerationSuccessResponse{Usernames: result.Text()})
 }
 
 func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
@@ -101,7 +82,7 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		log.Print("Error decoding JSON:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Something went wrong"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Something went wrong"})
 		return
 	}
 
@@ -115,14 +96,14 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 	if !allowedStyles[style] {
 		log.Print("Invalid style:", style)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid style"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Invalid style"})
 		return
 	}
 
 	// Validate traits length
 	if len(traits) > 100 {
 		log.Print("Traits too long")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Traits must be 100 characters or less"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Traits must be 100 characters or less"})
 		return
 	}
 
@@ -130,7 +111,7 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	client, err := genai.NewClient(ctx, nil)
 	if err != nil {
 		log.Print("Failed to create Gemini client:", err)
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Service unavailable"})
+		shared.WriteJSON(w, http.StatusInternalServerError, shared.ErrorResponse{Error: "Service unavailable"})
 		return
 	}
 
@@ -154,14 +135,14 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Print("Imagen API error:", err)
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to generate avatar"})
+		shared.WriteJSON(w, http.StatusInternalServerError, shared.ErrorResponse{Error: "Failed to generate avatar"})
 		return
 	}
 
 	// Check if we got any images
 	if len(response.GeneratedImages) == 0 {
 		log.Print("No images generated")
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "No image generated"})
+		shared.WriteJSON(w, http.StatusInternalServerError, shared.ErrorResponse{Error: "No image generated"})
 		return
 	}
 
@@ -169,5 +150,5 @@ func GenerateAvatar(w http.ResponseWriter, r *http.Request) {
 	imageBytes := response.GeneratedImages[0].Image.ImageBytes
 	imageBase64 := base64.StdEncoding.EncodeToString(imageBytes)
 
-	util.WriteJSON(w, http.StatusOK, AvatarGenerationSuccessResponse{Image: imageBase64})
+	shared.WriteJSON(w, http.StatusOK, AvatarGenerationSuccessResponse{Image: imageBase64})
 }

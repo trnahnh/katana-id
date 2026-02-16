@@ -1,4 +1,4 @@
-package handlers
+package contact
 
 import (
 	"context"
@@ -8,18 +8,8 @@ import (
 	"strings"
 
 	"katanaid/database"
-	"katanaid/models"
-	"katanaid/util"
+	"katanaid/shared"
 )
-
-type ContactRequest struct {
-	Email  string `json:"email"`
-	Reason string `json:"reason"`
-}
-
-type ContactResponse struct {
-	Message string `json:"message"`
-}
 
 func Contact(w http.ResponseWriter, r *http.Request) {
 	var req ContactRequest
@@ -27,7 +17,7 @@ func Contact(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		log.Print("Error decoding JSON:", err)
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid JSON"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Invalid JSON"})
 		return
 	}
 
@@ -36,25 +26,25 @@ func Contact(w http.ResponseWriter, r *http.Request) {
 
 	if email == "" || reason == "" {
 		log.Print("Missing required fields")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Email and reason are required"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Email and reason are required"})
 		return
 	}
 
-	if !util.IsValidEmail(email) {
+	if !shared.IsValidEmail(email) {
 		log.Print("Invalid email format")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Invalid email format"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Invalid email format"})
 		return
 	}
 
 	if len(reason) < 10 {
 		log.Print("Reason too short")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Please provide more details (at least 10 characters)"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Please provide more details (at least 10 characters)"})
 		return
 	}
 
 	if len(reason) > 2000 {
 		log.Print("Reason too long")
-		util.WriteJSON(w, http.StatusBadRequest, models.ErrorResponse{Error: "Message too long (max 2000 characters)"})
+		shared.WriteJSON(w, http.StatusBadRequest, shared.ErrorResponse{Error: "Message too long (max 2000 characters)"})
 		return
 	}
 
@@ -67,13 +57,13 @@ func Contact(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print("Error saving contact:", err)
-		util.WriteJSON(w, http.StatusInternalServerError, models.ErrorResponse{Error: "Failed to submit contact"})
+		shared.WriteJSON(w, http.StatusInternalServerError, shared.ErrorResponse{Error: "Failed to submit contact"})
 		return
 	}
 
 	log.Printf("New contact submission from: %s", email)
 
-	util.WriteJSON(w, http.StatusCreated, ContactResponse{
+	shared.WriteJSON(w, http.StatusCreated, ContactResponse{
 		Message: "Thank you for contacting us! We'll get back to you soon.",
 	})
 }

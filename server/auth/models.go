@@ -1,4 +1,4 @@
-package models
+package auth
 
 type User struct {
 	ID            int
@@ -25,8 +25,4 @@ type AuthSuccessResponse struct {
 	Username      string `json:"username"`
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
-}
-
-type ErrorResponse struct {
-	Error string `json:"error"`
 }
