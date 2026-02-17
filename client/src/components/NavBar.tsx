@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Menu, X, Globe, Github } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useScrollNavbar } from "@/hooks/useScrollNavbar";
 import {
   NavigationMenu,
@@ -11,98 +12,47 @@ import {
   NavigationMenuLink,
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
+import { ContactDialog } from "./ContactDialog";
+import Logo from "./Logo";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { token, logout } = useAuthStore();
   const { showNavbar } = useScrollNavbar();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 z-50">
+    <header className="sticky top-0 supports-backdrop-filter:bg-background/50 z-50">
       <nav
-        className={`flex items-center mx-auto max-w-7xl px-4 py-4 transition-opacity duration-500 ${showNavbar ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
+        className={`flex items-center mx-auto max-w-7xl px-4 py-4 transition-opacity duration-500 ${
+          showNavbar ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
       >
         {/* Logo */}
-        <div className="flex flex-1 justify-start">
+        <div className="flex flex-1 justify-start gap-4">
+          <Logo />
           <button
             onClick={() => navigate("/")}
-            className="text-xl font-bold"
+            className="text-xl"
           >
-            Caphne
+            KatanaID
           </button>
         </div>
 
         {/* Desktop navigation */}
         <div className="hidden lg:flex flex-3 gap-2 justify-center">
           <div>
-            <Button className="rounded-l-3xl rounded-r-none">Stories</Button>
-            <Button className="rounded-none">Events</Button>
-            <Button className="rounded-none">Friends</Button>
+            <Button className="rounded-l-3xl rounded-r-none">Development</Button>
+            <Button className="rounded-none">Donate</Button>
             <Button className="rounded-l-none">Support</Button>
           </div>
-          <div className="flex">
-            <Button className="rounded-r-none">Donate</Button>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="rounded-l-none rounded-r-3xl">
-                    Contribute
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="flex gap-2 p-4">
-                      <a
-                        href="https://github.com/suka712/caphne-studybuddy"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" className="size-24">
-                          <Github className="size-8" />
-                        </Button>
-                      </a>
-                      <div>
-                        <a
-                          href="https://github.com/suka712"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button
-                            variant="ghost"
-                            className="h-8 w-full justify-start"
-                          >
-                            Khiem Nguyen
-                          </Button>
-                        </a>
-                        <a
-                          href="https://github.com/Giaugg"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button
-                            variant="ghost"
-                            className="h-8 w-full justify-start"
-                          >
-                            Rich Le
-                          </Button>
-                        </a>
-                        <a
-                          href="https://github.com/trnahnh"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button
-                            variant="ghost"
-                            className="h-8 w-full justify-start"
-                          >
-                            Andrea Tran
-                          </Button>
-                        </a>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+          <div>
+            <Button className="rounded-l-md rounded-r-none" asChild>
+              <a href="https://docs.katanaid.com/">Docs</a>
+            </Button>
+            <ContactDialog>
+              <Button className="rounded-l-none rounded-r-3xl">Contact</Button>
+            </ContactDialog>
           </div>
         </div>
 
@@ -131,7 +81,20 @@ const NavBar = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          <Button onClick={() => navigate("/start")}>Start now</Button>
+          {token === null ? (
+            <Button onClick={() => navigate("/signup")}>
+              Sign in
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
+              Log out
+            </Button>
+          )}
         </div>
 
         {/* Mobile hamburger button */}
@@ -166,21 +129,14 @@ const NavBar = () => {
             <Button variant="ghost" className="justify-start">
               Support
             </Button>
-            <Button variant="ghost" className="justify-start">
-              Donate
+            <Button variant="ghost" className="justify-start" asChild>
+              <a href="https://docs.katanaid.com/">Docs</a>
             </Button>
-            <div className="border-t my-2" />
-            <p className="text-sm text-muted-foreground px-4">Contribute</p>
-            <a
-              href="https://github.com/suka712/caphne-studybuddy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button variant="ghost" className="justify-start w-full">
-                <Github className="size-5 mr-2" />
-                GitHub Repo
+            <ContactDialog>
+              <Button variant="ghost" className="justify-start">
+                Contact
               </Button>
-            </a>
+            </ContactDialog>
             <div className="border-t my-2" />
             <p className="text-sm text-muted-foreground px-4">Language</p>
             <Button variant="ghost" className="justify-start">
@@ -190,15 +146,28 @@ const NavBar = () => {
               Vietnamese
             </Button>
             <div className="border-t my-2" />
-            <Button
-              className="w-full"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate("/start");
-              }}
-            >
-              Start now
-            </Button>
+            {token === null ? (
+              <Button
+                className="w-full"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate("/signup");
+                }}
+              >
+                Sign in
+              </Button>
+            ) : (
+              <Button
+                className="w-full"
+                onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                  navigate("/");
+                }}
+              >
+                Log out
+              </Button>
+            )}
           </div>
         </div>
       )}
