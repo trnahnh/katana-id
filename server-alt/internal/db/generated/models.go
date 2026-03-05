@@ -30,9 +30,8 @@ type Session struct {
 }
 
 type User struct {
-	ID            pgtype.UUID
-	Username      string
-	Email         string
-	EmailVerified bool
-	CreatedAt     pgtype.Timestamptz
+	ID        pgtype.UUID
+	Username  string
+	Email     string
+	CreatedAt pgtype.Timestamptz
 }

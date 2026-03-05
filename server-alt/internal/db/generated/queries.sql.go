@@ -71,25 +71,64 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (username, email, email_verified)
-VALUES ($1, $2, $3)
-RETURNING id, username, email, email_verified, created_at
+INSERT INTO users (username, email)
+VALUES ($1, $2)
+RETURNING id, username, email, created_at
 `
 
 type CreateUserParams struct {
-	Username      string
-	Email         string
-	EmailVerified bool
+	Username string
+	Email    string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.Email, arg.EmailVerified)
+	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.Email)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
-		&i.EmailVerified,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const deleteOTPsByEmail = `-- name: DeleteOTPsByEmail :exec
+DELETE FROM otps WHERE email = $1
+`
+
+func (q *Queries) DeleteOTPsByEmail(ctx context.Context, email string) error {
+	_, err := q.db.Exec(ctx, deleteOTPsByEmail, email)
+	return err
+}
+
+const getOTPByEmail = `-- name: GetOTPByEmail :one
+SELECT id, email, otp, expires_at FROM otps WHERE email = $1 AND expires_at > NOW() ORDER BY expires_at DESC LIMIT 1
+`
+
+func (q *Queries) GetOTPByEmail(ctx context.Context, email string) (Otp, error) {
+	row := q.db.QueryRow(ctx, getOTPByEmail, email)
+	var i Otp
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Otp,
+		&i.ExpiresAt,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, username, email, created_at FROM users WHERE email = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
 		&i.CreatedAt,
 	)
 	return i, err
