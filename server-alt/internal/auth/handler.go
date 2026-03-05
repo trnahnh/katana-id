@@ -23,7 +23,7 @@ type sendOTPRequest struct {
 }
 
 type successResponse struct {
-	Message string `json: message`
+	Message string `json:"message"`
 }
 
 type Handler struct {
@@ -68,7 +68,7 @@ func (h *Handler) SendOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJSON(w, http.StatusOK, map[string]string{"message": "OTP sent"})
+	util.WriteJSON(w, http.StatusOK, successResponse{Message: "OTP sent"})
 }
 
 type verifyOTPRequest struct {
@@ -148,4 +148,4 @@ func (h *Handler) VerifyOTP(w http.ResponseWriter, r *http.Request) {
 	})
 
 	util.WriteJSON(w, http.StatusOK, successResponse{Message: "Cookie set"})
-} 
+}
