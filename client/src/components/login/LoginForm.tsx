@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import logo from "/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { LucideLoader2 } from "lucide-react";
 import { useFormDebounce } from "@/hooks/use-form-debounce";
 import { OAuthButtons } from "@/components/OAuthButtons";
@@ -50,7 +50,7 @@ export function LoginForm({
           <img src={logo} className="w-20"></img>
           <h1 className="text-2xl font-bold pt-5">Login to KatanaID</h1>
         </div>
-        <Field>
+        <Field className="mt-5">
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
@@ -61,25 +61,7 @@ export function LoginForm({
             onChange={(e) => setEmail(e.target.value)}
           />
         </Field>
-        <Field>
-          <div className="flex items-center">
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </a>
-          </div>
-          <Input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Field>
+        
         <Field>
           <Button type="submit" disabled={isLoggingIn || isDebouncing}>
             {isLoggingIn ? <LucideLoader2 className="animate-spin" /> : "Login"}
