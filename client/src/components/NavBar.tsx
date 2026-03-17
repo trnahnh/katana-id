@@ -44,7 +44,7 @@ const NavBar = () => {
           <div>
             <Button variant="secondary" className="rounded-l-3xl rounded-r-none border border-white/8">Development</Button>
             <Button variant="secondary" className="rounded-none border-y border-white/8">Donate</Button>
-            <Button variant="secondary" className="rounded-l-none rounded-r-none border border-white/8">Support</Button>
+            <Button variant="secondary" className="rounded-l-none rounded-r-md border border-white/8">Support</Button>
           </div>
           <div>
             <Button variant="secondary" className="rounded-l-md rounded-r-none border border-white/8" asChild>

@@ -13,10 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { LucideLoader2 } from "lucide-react";
-import { useFormDebounce } from "@/hooks/use-form-debounce";
 import { OAuthButtons } from "@/components/OAuthButtons";
 
-export const SignInForm = ({
+export const LoginForm = ({
   className,
   ...props
 }: React.ComponentProps<"form">) => {
@@ -26,11 +25,8 @@ export const SignInForm = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { isDebouncing, shouldSubmit } = useFormDebounce({ email: "", password: "" });
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!shouldSubmit({ email, password })) return;
 
     await login({ email, password });
 
@@ -61,9 +57,9 @@ export const SignInForm = ({
             onChange={(e) => setEmail(e.target.value)}
           />
         </Field>
-        
+
         <Field>
-          <Button type="submit" disabled={isLoggingIn || isDebouncing}>
+          <Button type="submit" disabled={isLoggingIn}>
             {isLoggingIn ? <LucideLoader2 className="animate-spin" /> : "Login"}
           </Button>
         </Field>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Input } from "./input";
+import { Input } from "@/components/ui/input";
 import { LucideSearch } from "lucide-react";
 
 export function SiteHeader() {

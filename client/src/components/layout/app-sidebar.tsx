@@ -6,8 +6,8 @@ import {
 } from "@tabler/icons-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { NavSecondary } from "@/components/ui/nav-secondary";
-import { NavUser } from "@/components/ui/nav-user";
+import { NavSecondary } from "@/components/layout/nav-secondary";
+import { NavUser } from "@/components/layout/nav-user";
 import {
   Sidebar,
   SidebarContent,

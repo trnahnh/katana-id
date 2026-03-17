@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useFormDebounce } from "@/hooks/use-form-debounce";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +26,6 @@ export function ContactDialog({ children }: ContactDialogProps) {
   const [reason, setReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { isDebouncing, shouldSubmit } = useFormDebounce({ email: "", reason: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +40,6 @@ export function ContactDialog({ children }: ContactDialogProps) {
       return;
     }
 
-    if (!shouldSubmit({ email, reason })) return;
 
     setIsSubmitting(true);
 
@@ -105,7 +102,7 @@ export function ContactDialog({ children }: ContactDialogProps) {
             </span>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isSubmitting || isDebouncing}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <LucideLoader2 className="animate-spin" />
               ) : (
