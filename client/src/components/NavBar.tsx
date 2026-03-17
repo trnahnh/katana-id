@@ -22,7 +22,7 @@ const NavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-white/6">
+    <header className="sticky top-0 z-50 backdrop-blur-xs bg-background/70">
       <nav
         className={`flex items-center mx-auto max-w-7xl px-4 py-4 transition-opacity duration-500 ${
           showNavbar ? "opacity-100" : "opacity-0 pointer-events-none"
