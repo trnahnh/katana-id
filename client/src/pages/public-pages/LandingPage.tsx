@@ -18,7 +18,7 @@ const LandingPage = () => {
       {/* ----------------------------------NavBar---------------------------------- */}
       <NavBar />
       {/* ----------------------------------Hero Section---------------------------------- */}
-      <div className="relative flex flex-col justify-center items-center pt-22 md:pt-50 overflow-hidden">
+      <div className="relative flex flex-col justify-center items-center pt-22 md:pt-35 overflow-hidden">
         {/* Background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,oklch(65%_0.22_268/0.12)_0%,transparent_70%)] pointer-events-none blur-3xl" />
         <MagicBadge title="Branding Toolkit" />
