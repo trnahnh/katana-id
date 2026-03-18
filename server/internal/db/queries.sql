@@ -25,3 +25,9 @@ DELETE FROM otps WHERE email = $1;
 INSERT INTO providers (user_id, provider_name, provider_account_id)
 VALUES ($1, $2, $3)
 RETURNING *;
+
+-- name: GetSession :one
+SELECT * FROM sessions WHERE token = $1 AND expires_at > NOW();
+
+-- name: DeleteSessionByToken :exec
+DELETE FROM sessions WHERE token = $1;

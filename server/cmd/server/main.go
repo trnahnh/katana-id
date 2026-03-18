@@ -47,6 +47,8 @@ func main() {
 	r.Route("/auth", func(r chi.Router) {
 		r.With(httprate.Limit(1, 1*time.Minute)).Post("/send-otp", auth.SendOTP)
 		r.Post("/verify-otp", auth.VerifyOTP)
+		r.Get("/me", auth.Me)
+		r.Post("/logout", auth.Logout)
 	})
 
 	port := os.Getenv("PORT")

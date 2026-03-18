@@ -102,6 +102,15 @@ func (q *Queries) DeleteOTPsByEmail(ctx context.Context, email string) error {
 	return err
 }
 
+const deleteSessionByToken = `-- name: DeleteSessionByToken :exec
+DELETE FROM sessions WHERE token = $1
+`
+
+func (q *Queries) DeleteSessionByToken(ctx context.Context, token pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSessionByToken, token)
+	return err
+}
+
 const getOTPByEmail = `-- name: GetOTPByEmail :one
 SELECT id, email, otp, expires_at FROM otps WHERE email = $1 AND expires_at > NOW() ORDER BY expires_at DESC LIMIT 1
 `
@@ -115,6 +124,17 @@ func (q *Queries) GetOTPByEmail(ctx context.Context, email string) (Otp, error) 
 		&i.Otp,
 		&i.ExpiresAt,
 	)
+	return i, err
+}
+
+const getSession = `-- name: GetSession :one
+SELECT token, email, expires_at FROM sessions WHERE token = $1 AND expires_at > NOW()
+`
+
+func (q *Queries) GetSession(ctx context.Context, token pgtype.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, getSession, token)
+	var i Session
+	err := row.Scan(&i.Token, &i.Email, &i.ExpiresAt)
 	return i, err
 }
 

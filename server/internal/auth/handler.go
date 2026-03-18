@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/resend/resend-go/v3"
@@ -26,9 +27,73 @@ type successResponse struct {
 	Message string `json:"message"`
 }
 
+type meResponse struct {
+	Email string `json:"email"`
+	Username string `json:"username"`
+}
+
 type Handler struct {
 	Queries     *gendb.Queries
 	EmailClient *resend.Client
+}
+
+func (h *Handler) Me(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session")
+	if err != nil {
+		util.WriteJSON(w, http.StatusUnauthorized, util.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+
+	token, err := uuid.Parse(cookie.Value)
+	if err != nil {
+		util.WriteJSON(w, http.StatusUnauthorized, util.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+
+	ctx := r.Context()
+	session, err := h.Queries.GetSession(ctx, pgtype.UUID{
+		Bytes: token,
+		Valid: true,
+	})
+	if err != nil {
+		util.WriteJSON(w, http.StatusUnauthorized, util.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+
+	email := session.Email
+	user, err := h.Queries.GetUserByEmail(ctx, email)
+	if err != nil {
+		util.WriteJSON(w, http.StatusUnauthorized, util.ErrorResponse{Error: "Unauthorized"})
+		return
+	}
+
+	util.WriteJSON(w, http.StatusOK, meResponse{
+		Email: email,
+		Username: user.Username, 
+	})
+}
+
+func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := r.Cookie("session")
+	id, _ := uuid.Parse(cookie.Value)
+	
+	token := pgtype.UUID{
+		Valid: true,
+		Bytes: id,
+	}
+	ctx := r.Context()
+	h.Queries.DeleteSessionByToken(ctx, token)
+	
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+	})
+
+	util.WriteJSON(w, http.StatusOK, successResponse{
+		Message: "Logged out",
+	})
 }
 
 func (h *Handler) SendOTP(w http.ResponseWriter, r *http.Request) {
@@ -147,5 +212,5 @@ func (h *Handler) VerifyOTP(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	util.WriteJSON(w, http.StatusOK, successResponse{Message: "Cookie set"})
+	util.WriteJSON(w, http.StatusOK, successResponse{Message: "OTP verified"})
 }
