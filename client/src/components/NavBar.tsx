@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useScrollNavbar } from "@/hooks/useScrollNavbar";
 import {
   NavigationMenu,
@@ -17,7 +16,6 @@ import Logo from "./Logo";
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const { token, logout } = useAuthStore();
   const { showNavbar } = useScrollNavbar();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -81,20 +79,9 @@ const NavBar = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          {token === null ? (
             <Button onClick={() => navigate("/signup")}>
               Sign in
             </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                logout();
-                navigate("/");
-              }}
-            >
-              Log out
-            </Button>
-          )}
         </div>
 
         {/* Mobile hamburger button */}
@@ -146,7 +133,6 @@ const NavBar = () => {
               Vietnamese
             </Button>
             <div className="border-t my-2" />
-            {token === null ? (
               <Button
                 className="w-full"
                 onClick={() => {
@@ -156,18 +142,6 @@ const NavBar = () => {
               >
                 Sign in
               </Button>
-            ) : (
-              <Button
-                className="w-full"
-                onClick={() => {
-                  logout();
-                  setMobileMenuOpen(false);
-                  navigate("/");
-                }}
-              >
-                Log out
-              </Button>
-            )}
           </div>
         </div>
       )}

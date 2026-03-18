@@ -20,7 +20,7 @@ const LandingPage = () => {
       {/* ----------------------------------Hero Section---------------------------------- */}
       <div className="relative flex flex-col justify-center items-center pt-22 md:pt-35 overflow-hidden">
         {/* Background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,oklch(65%_0.22_268/0.12)_0%,transparent_70%)] pointer-events-none blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-125 rounded-full bg-[radial-gradient(ellipse_at_center,oklch(65%_0.22_268/0.12)_0%,transparent_70%)] pointer-events-none blur-3xl" />
         <MagicBadge title="Branding Toolkit" />
         <h1 className="font-heading text-5xl md:text-7xl leading-[1.1] text-center mt-5 max-w-4xl tracking-tight">
           Find the perfect name for your next project.{" "}
