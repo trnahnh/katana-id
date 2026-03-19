@@ -10,7 +10,7 @@ const pageVariants = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: "easeIn" as const } },
 };
 
-function AnimatedRoutes() {
+const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
@@ -24,7 +24,7 @@ function AnimatedRoutes() {
   );
 }
 
-function App() {
+const App = () => {
   return (
     <>
       <Toaster position="top-center" />
