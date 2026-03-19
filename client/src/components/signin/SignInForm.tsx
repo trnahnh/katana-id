@@ -13,7 +13,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import logo from "/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Pen, RotateCcw } from "lucide-react";
 import { OAuthButtons } from "@/components/signin/OAuthButtons";
@@ -91,11 +90,6 @@ export const SignInForm = ({
       onSubmit={handleSubmit}
     >
       <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <img src={logo} className="w-20" />
-          <h1 className="text-2xl font-bold pt-5">Sign in to KatanaID</h1>
-        </div>
-
         <Field className="mt-3">
           {step === "email" ? (
             <>
