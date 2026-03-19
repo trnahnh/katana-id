@@ -17,7 +17,7 @@ import {
 import logo from "/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Pen, RotateCcw } from "lucide-react";
-import { OAuthButtons } from "@/components/OAuthButtons";
+import { OAuthButtons } from "@/components/signin/OAuthButtons";
 import { axiosInstance } from "@/lib/axios";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
@@ -100,11 +100,10 @@ export const SignInForm = ({
         <Field className="mt-3">
           {step === "email" ? (
             <>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
                 type="email"
-                placeholder="damian@email.com"
+                placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -131,12 +130,12 @@ export const SignInForm = ({
                   <InputOTPGroup><InputOTPSlot index={5} /></InputOTPGroup>
                 </InputOTP>
 
-                  <Button type="button" variant="secondary" size="icon" disabled={loading} onClick={handleResend} title="Resend code" >
-                    <RotateCcw />
-                  </Button>
-                  <Button type="button" variant="secondary" size="icon" disabled={loading} onClick={() => { setStep("email"); setOtp(""); }} title="Change email">
-                    <Pen />
-                  </Button>
+                <Button type="button" variant="secondary" size="icon" disabled={loading} onClick={handleResend} title="Resend code" >
+                  <RotateCcw />
+                </Button>
+                <Button type="button" variant="secondary" size="icon" disabled={loading} onClick={() => { setStep("email"); setOtp(""); }} title="Change email">
+                  <Pen />
+                </Button>
               </div>
             </>
           )}
@@ -144,22 +143,13 @@ export const SignInForm = ({
 
         <Field>
           <Button type="submit" disabled={loading}>
-            {loading ? <Loader2 className="animate-spin" /> : step === "email" ? "Send OTP" : "Sign In"}
+            {loading ? <Loader2 className="animate-spin" /> : step === "email" ? "Continue with Email" : "Sign In"}
           </Button>
         </Field>
 
-        <FieldSeparator>Or continue with</FieldSeparator>
-        <Field className="gap-5">
-          <OAuthButtons labelPrefix="Login" />
-          <FieldDescription className="text-center">
-            Don&apos;t have an account?{" "}
-            <a
-              onClick={() => navigate("/signup")}
-              className="underline underline-offset-4 cursor-pointer"
-            >
-              Sign up
-            </a>
-          </FieldDescription>
+        <FieldSeparator>Or with</FieldSeparator>
+        <Field className="gap-3">
+          <OAuthButtons/>
         </Field>
       </FieldGroup>
     </form>

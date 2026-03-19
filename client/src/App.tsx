@@ -2,12 +2,12 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import LandingPage from "./pages/public-pages/LandingPage";
-import LoginPage from "./pages/public-pages/SignInPage";
+import SignInPage from "./pages/public-pages/SignInPage";
 
 const pageVariants = {
   initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" as const } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.15, ease: "easeIn" as const } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as const } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: "easeIn" as const } },
 };
 
 function AnimatedRoutes() {
@@ -17,7 +17,7 @@ function AnimatedRoutes() {
       <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit">
         <Routes location={location}>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/signin" element={<LoginPage />} />
+          <Route path="/signin" element={<SignInPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
