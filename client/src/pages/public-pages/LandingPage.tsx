@@ -47,7 +47,7 @@ const LandingPage = () => {
       <SideScroll />
       {/* ----------------------------------Features section---------------------------------- */}
       <MaxWidthWrapper className="pt-50 md:pt-70 relative z-10">
-        <AnimationContainer delay={0.1}>
+        <AnimationContainer delay={0.3}>
           <div className="flex flex-col w-full items-center justify-center py-8">
             <MagicBadge title="Features" />
             <h2 className="text-center text-3xl md:text-5xl leading-tight font-heading text-foreground mt-6">
@@ -63,7 +63,7 @@ const LandingPage = () => {
             </p>
           </div>
         </AnimationContainer>
-        <AnimationContainer delay={0.2}>
+        <AnimationContainer delay={0.3}>
           <BentoGrid className="py-8">
             {CARDS.map((feature, idx) => (
               <BentoCard key={idx} {...feature} />
@@ -77,7 +77,7 @@ const LandingPage = () => {
 
       {/* ----------------------------------CTA---------------------------------- */}
       <MaxWidthWrapper className="mt-60 pb-70 max-w-[80vw] overflow-x-hidden scrollbar-hide">
-        <AnimationContainer delay={0.1}>
+        <AnimationContainer delay={0.3}>
           <LampContainer>
             <div className="flex flex-col items-center justify-center relative w-full text-center max-w-3xl">
               <h2 className="text-3xl md:text-5xl pt-7 text-center leading-tight font-heading tracking-tight">
